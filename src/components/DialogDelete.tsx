@@ -35,8 +35,11 @@ export default function DialogDelete(p: DialogDeleteProps) {
       {isError && (
         <Alert severity="error">This is an error alert — check it out!</Alert>
       )}
-      <DialogTitle id="responsive-dialog-title">Delete User ?</DialogTitle>
+      <DialogTitle id="responsive-dialog-title">Confirm delete</DialogTitle>
       <DialogActions>
+        <Button onClick={() => setOpen(false)} style={{ color: "grey" }}>
+          Cancel
+        </Button>
         <Link to={"/"}>
           <Button
             onClick={() => {
@@ -44,12 +47,11 @@ export default function DialogDelete(p: DialogDeleteProps) {
               setOpen(false);
             }}
             disabled={isLoading}
+            style={{ color: "red" }}
           >
-            {" "}
-            Confirmer{" "}
+            Delete
           </Button>
         </Link>
-        <Button onClick={() => setOpen(false)}>Annuler</Button>
       </DialogActions>
     </Dialog>
   );

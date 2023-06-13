@@ -93,6 +93,7 @@ type ModalUserProps = {
   showModal: (open: boolean) => void;
   open: boolean;
   user: User;
+  title: string;
 };
 
 export default function FormUser(p: ModalUserProps) {
@@ -163,7 +164,12 @@ export default function FormUser(p: ModalUserProps) {
         {p.isError && (
           <Alert severity="error">This is an error alert — check it out!</Alert>
         )}
-        <DialogTitle id="responsive-dialog-title">Create User</DialogTitle>
+        <DialogTitle
+          id="responsive-dialog-title"
+          style={{ textAlign: "center" }}
+        >
+          {p.title}
+        </DialogTitle>
         <DialogActions>
           <Stack
             component="form"
@@ -176,7 +182,8 @@ export default function FormUser(p: ModalUserProps) {
           >
             {s.requireFirstName ? (
               <TextField
-                placeholder="First name*"
+                label="FirstName*"
+                placeholder="FirstName*"
                 inputProps={ariaLabel}
                 onChange={handleFirstNameTextChange}
                 variant="outlined"
@@ -186,7 +193,8 @@ export default function FormUser(p: ModalUserProps) {
               <TextField
                 required
                 error
-                placeholder="First name*"
+                label="FirstName*"
+                placeholder="FirstName*"
                 inputProps={ariaLabel}
                 onChange={handleFirstNameTextChange}
                 variant="outlined"
@@ -196,7 +204,8 @@ export default function FormUser(p: ModalUserProps) {
             )}
             {s.requireLastName ? (
               <TextField
-                placeholder="Last name*"
+                label="LastName*"
+                placeholder="LastName*"
                 inputProps={ariaLabel}
                 onChange={handleLastNameTextChange}
                 variant="outlined"
@@ -206,7 +215,8 @@ export default function FormUser(p: ModalUserProps) {
               <TextField
                 error
                 required
-                placeholder="Last name*"
+                label="LastName*"
+                placeholder="LastName*"
                 inputProps={ariaLabel}
                 onChange={handleLastNameTextChange}
                 variant="outlined"
@@ -224,7 +234,8 @@ export default function FormUser(p: ModalUserProps) {
             </LocalizationProvider>
             {s.requireImageUrl ? (
               <TextField
-                placeholder="Image URL"
+                label="Image URL*"
+                placeholder="Image URL*"
                 inputProps={ariaLabel}
                 onChange={handleImageUrlTextChange}
                 variant="outlined"
@@ -233,7 +244,8 @@ export default function FormUser(p: ModalUserProps) {
             ) : (
               <TextField
                 error
-                placeholder="Image URL"
+                label="Image URL*"
+                placeholder="Image URL*"
                 inputProps={ariaLabel}
                 onChange={handleImageUrlTextChange}
                 variant="outlined"
@@ -241,7 +253,12 @@ export default function FormUser(p: ModalUserProps) {
                 defaultValue={user.imageUrl}
               />
             )}
-            <Button onClick={handleAction} disabled={p.isLoading}>
+            <Button
+              onClick={handleAction}
+              disabled={p.isLoading}
+              variant="contained"
+              color="primary"
+            >
               Submit
             </Button>
           </Stack>

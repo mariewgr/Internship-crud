@@ -1,12 +1,13 @@
-import { TableRow, TableCell, Button } from "@material-ui/core";
+import { TableRow, TableCell, IconButton } from "@material-ui/core";
 import { User, UsersListActions } from "../App";
 import { Link } from "react-router-dom";
-import trash from "./../assets/trash.png";
 import "./UserRow.css";
 import { createContext, useState } from "react";
 import DialogDelete from "./DialogDelete";
 import FormUser from "./FormUser";
 import { ErrorMap, LoadingMap } from "state-decorator";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 type UserRowProps = {
   user: User;
@@ -14,29 +15,6 @@ type UserRowProps = {
   errorMap: ErrorMap<UsersListActions>;
 } & Pick<UsersListActions, "deleteUser"> &
   Pick<UsersListActions, "updateUser">;
-
-function deleteConfirmation(
-  id: string,
-  deleteUser: (userId: string | undefined) => Promise<unknown>
-) {
-  return (
-    <div>
-      <Button onClick={() => deleteUser(id)}> Confirmer </Button>
-      <Button onClick={() => deleteButton(id, deleteUser)}>Annuler</Button>
-    </div>
-  );
-}
-
-function deleteButton(
-  id: string,
-  deleteUser: (userId: string | undefined) => Promise<unknown>
-) {
-  return (
-    <Button onClick={() => deleteConfirmation(id, deleteUser)}>
-      <img src={trash} />
-    </Button>
-  );
-}
 
 const initUser = {
   id: "",
@@ -62,21 +40,22 @@ export default function UserRow(p: UserRowProps) {
         <TableCell align="center">{user.firstName}</TableCell>
         <TableCell align="center">{user.lastName}</TableCell>
         <TableCell align="center">
-          <Button onClick={() => setDeleteOpen(true)}>
-            <img src={trash} />
-          </Button>
-          <DialogDelete
-            isError={errorMap.deleteUser}
-            isLoading={loadingMap.deleteUser}
-            open={openDelete}
-            setOpen={setDeleteOpen}
-            deleteUser={deleteUser}
-            id={user.id}
-          />
-        </TableCell>
-        <TableCell>
           <>
-            <Button onClick={() => setUpdateOpen(true)}>Update User</Button>
+            <IconButton aria-label="delete" onClick={() => setDeleteOpen(true)}>
+              <DeleteIcon />
+            </IconButton>
+            <IconButton aria-label="delete"></IconButton>
+            <DialogDelete
+              isError={errorMap.deleteUser}
+              isLoading={loadingMap.deleteUser}
+              open={openDelete}
+              setOpen={setDeleteOpen}
+              deleteUser={deleteUser}
+              id={user.id}
+            />
+            <IconButton aria-label="edit" onClick={() => setUpdateOpen(true)}>
+              <EditIcon />
+            </IconButton>
             <FormUser
               action={p.updateUser}
               showModal={setUpdateOpen}
@@ -85,6 +64,7 @@ export default function UserRow(p: UserRowProps) {
               isLoading={loadingMap.updateUser}
               isError={errorMap.updateUser}
               user={user}
+              title="Edit User"
             />
           </>
         </TableCell>

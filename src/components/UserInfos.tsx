@@ -5,12 +5,13 @@ import "./UserInfo.css";
 import useLocalStore, { StoreConfig } from "state-decorator";
 import LoadingPage from "./LoadingPage";
 import ErrorPage from "./ErrorPage";
-import { Button, Grid } from "@material-ui/core";
-import trash from "./../assets/trash.png";
+import { AppBar, Box, Button, Fab, Grid, Toolbar } from "@material-ui/core";
 import dayjs, { Dayjs } from "dayjs";
 import DialogDelete from "./DialogDelete";
 import FormUser from "./FormUser";
 import { UserContext } from "./UserRow";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const initUser = {
   id: "",
@@ -101,88 +102,120 @@ export default function UserInfo() {
       ) : errorMap.loadUser ? (
         <ErrorPage onRetry={() => actions.loadUser(userId)} />
       ) : (
-        <dl>
-          <Grid
-            container
-            justifyContent="center"
-            alignItems="center"
-            direction="column"
-            spacing={4}
-          >
-            <Grid container item direction="row">
-              <Grid item xs={6}>
-                <dt>User Id:</dt>
+        <>
+          <AppBar component="nav">
+            <Toolbar>
+              <Box sx={{ display: { xs: "none", sm: "block" } }}>
+                <Link to={"/"} style={{ color: "#fff" }}>
+                  Home
+                </Link>
+              </Box>
+            </Toolbar>
+          </AppBar>
+          <Toolbar id="back-to-top-anchor" />
+          <dl>
+            <Grid
+              container
+              justifyContent="center"
+              alignItems="center"
+              direction="column"
+              spacing={4}
+            >
+              <Grid container item direction="row">
+                <Grid item xs={6}>
+                  <dt>User Id:</dt>
+                </Grid>
+                <Grid item xs={6}>
+                  <dd>{user.id}</dd>
+                </Grid>
               </Grid>
-              <Grid item xs={6}>
-                <dd>{user.id}</dd>
+              <Grid container item direction="row">
+                <Grid item xs={6}>
+                  <dt>Firstname:</dt>
+                </Grid>
+                <Grid item xs={6}>
+                  <dd>{user.firstName}</dd>
+                </Grid>
+              </Grid>
+              <Grid container item direction="row">
+                <Grid item xs={6}>
+                  <dt>Lastname:</dt>
+                </Grid>
+                <Grid item xs={6}>
+                  <dd>{user.lastName}</dd>
+                </Grid>
+              </Grid>
+              <Grid container item direction="row">
+                <Grid item xs={6}>
+                  <dt>Birthday:</dt>
+                </Grid>
+                <Grid item xs={6}>
+                  <dd>
+                    {user.birthdate !== null ? (
+                      <div>
+                        {dayjs(s.user.birthdate).format("DD-MMMM-YYYY")}
+                      </div>
+                    ) : (
+                      <div>No Birthdate registered</div>
+                    )}
+                  </dd>
+                </Grid>
+              </Grid>
+              <Grid container item direction="row">
+                <Grid item xs={6}>
+                  <dt>Image:</dt>
+                </Grid>
+                <Grid item xs={6}>
+                  <dd>
+                    <img src={user.imageUrl}></img>
+                  </dd>
+                </Grid>
               </Grid>
             </Grid>
-            <Grid container item direction="row">
-              <Grid item xs={6}>
-                <dt>Firstname:</dt>
-              </Grid>
-              <Grid item xs={6}>
-                <dd>{user.firstName}</dd>
-              </Grid>
-            </Grid>
-            <Grid container item direction="row">
-              <Grid item xs={6}>
-                <dt>Lastname:</dt>
-              </Grid>
-              <Grid item xs={6}>
-                <dd>{user.lastName}</dd>
-              </Grid>
-            </Grid>
-            <Grid container item direction="row">
-              <Grid item xs={6}>
-                <dt>Birthday:</dt>
-              </Grid>
-              <Grid item xs={6}>
-                <dd>
-                  {user.birthdate !== null ? (
-                    <div>{dayjs(s.user.birthdate).format("DD-MMMM-YYYY")}</div>
-                  ) : (
-                    <div>No Birthdate registered</div>
-                  )}
-                </dd>
-              </Grid>
-            </Grid>
-            <Grid container item direction="row">
-              <Grid item xs={6}>
-                <dt>Image:</dt>
-              </Grid>
-              <Grid item xs={6}>
-                <dd>
-                  <img src={user.imageUrl}></img>
-                </dd>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Button onClick={() => actions.setOpenDelete(true)}>
-            <img src={trash} />
-          </Button>
-          <DialogDelete
-            isError={errorMap.deleteUser}
-            isLoading={loadingMap.deleteUser}
-            open={s.openDelete}
-            setOpen={actions.setOpenDelete}
-            deleteUser={actions.deleteUser}
-            id={user.id}
-          />
-          <Button onClick={() => actions.setOpenUpdate(true)}>
-            UPDATE USER
-          </Button>
-          <FormUser
-            action={actions.updateUser}
-            showModal={actions.setOpenUpdate}
-            open={s.openUpdate}
-            id={user.id}
-            isLoading={loadingMap.updateUser}
-            isError={errorMap.updateUser}
-            user={user}
-          />
-          <Link to={"/"}>Return</Link>
-        </dl>
+            <Fab
+              color="primary"
+              aria-label="delete"
+              style={{ position: "fixed", bottom: 16, left: 16 }}
+            >
+              <Button
+                onClick={() => actions.setOpenDelete(true)}
+                style={{ color: "#fff" }}
+              >
+                <DeleteIcon />
+              </Button>
+            </Fab>
+            <DialogDelete
+              isError={errorMap.deleteUser}
+              isLoading={loadingMap.deleteUser}
+              open={s.openDelete}
+              setOpen={actions.setOpenDelete}
+              deleteUser={actions.deleteUser}
+              id={user.id}
+            />
+            <Fab
+              color="primary"
+              aria-label="edit"
+              style={{ position: "fixed", bottom: 16, right: 16 }}
+            >
+              <Button
+                onClick={() => actions.setOpenUpdate(true)}
+                style={{ color: "#fff" }}
+              >
+                <EditIcon />
+              </Button>
+            </Fab>
+            <FormUser
+              action={actions.updateUser}
+              showModal={actions.setOpenUpdate}
+              open={s.openUpdate}
+              id={user.id}
+              isLoading={loadingMap.updateUser}
+              isError={errorMap.updateUser}
+              user={user}
+              title="Edit User"
+            />
+          </dl>
+        </>
       )}
     </>
   );

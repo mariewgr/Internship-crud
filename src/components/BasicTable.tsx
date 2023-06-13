@@ -35,12 +35,14 @@ export default function BasicTable(p: BasicTableProps) {
         <TableHead>
           <TableRow>
             {p.rows.map((row) => (
-              <TableCell align="right">{row}</TableCell>
+              <TableCell align="center">
+                <p style={{ fontWeight: "bold" }}>{row}</p>
+              </TableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {users.map((user: User) => (
+          {p.users.map((user: User) => (
             <UserRow
               user={user}
               deleteUser={p.deleteUser}
