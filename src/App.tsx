@@ -1,14 +1,13 @@
 import "./App.css";
 import { useLocalStore, StoreConfig } from "state-decorator";
-import BasicTable from "./components/BasicTable";
 import { createContext, useEffect } from "react";
 import LoadingPage from "./components/LoadingPage";
 import ErrorPage from "./components/ErrorPage";
-import FormUser from "./components/FormUser";
 import "./App.css";
-import { Button } from "@material-ui/core";
 import { setArgIn } from "state-decorator/helpers";
 import { Dayjs } from "dayjs";
+import { Pagination } from "@mui/material";
+import HomePage from "./components/HomePage";
 
 export type User = {
   id: string;
@@ -120,8 +119,6 @@ export const UsersContext = createContext<User[]>([]);
 function App() {
   const { state: s, actions, loadingMap, errorMap } = useLocalStore(config);
 
-  const rows = ["Id User", "First name", "Last name", "Delete", "Update"];
-
   useEffect(() => {
     actions.loadUsers();
   }, []);
@@ -134,32 +131,17 @@ function App() {
         <LoadingPage />
       ) : (
         <>
-          <Button onClick={() => actions.showCreateModal(true)}>
-            Create User
-          </Button>
-          <FormUser
-            action={actions.createUser}
-            isError={errorMap.createUser}
-            isLoading={loadingMap.createUser}
-            id={""}
-            showModal={actions.showCreateModal}
-            open={s.openCreate}
-            user={{
-              id: "",
-              firstName: "",
-              lastName: "",
-              birthdate: null,
-              imageUrl: "",
-            }}
-          ></FormUser>
-          <BasicTable
-            users={s.users}
-            rows={rows}
-            deleteUser={actions.deleteUser}
-            updateUser={actions.updateUser}
+          <HomePage
             loadingMap={loadingMap}
             errorMap={errorMap}
+            users={s.users}
+            createUser={actions.createUser}
+            showCreateModal={actions.showCreateModal}
+            openCreate={s.openCreate}
+            deleteUser={actions.deleteUser}
+            updateUser={actions.updateUser}
           />
+          {/* <Pagination count={10} color="primary" /> */}
         </>
       )}
     </UsersContext.Provider>
