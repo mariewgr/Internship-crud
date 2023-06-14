@@ -4,6 +4,7 @@ import App from "./App.tsx";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import UserInfo from "./components/UserInfos.tsx";
+import { UsersContextProvider } from "./contexts/UsersContext.tsx";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <UsersContextProvider>
+      <RouterProvider router={router} />
+    </UsersContextProvider>
   </React.StrictMode>
 );

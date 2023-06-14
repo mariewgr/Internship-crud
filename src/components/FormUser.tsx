@@ -8,13 +8,13 @@ import {
   useTheme,
 } from "@material-ui/core";
 import { ChangeEvent, useContext, useEffect } from "react";
-import { User } from "../App";
 import { useLocalStore, StoreConfig } from "state-decorator";
 import { Alert, Stack } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { UserContext } from "./UserRow";
+import UsersContext, { User } from "../contexts/UsersContext";
 
 export type Actions = {
   firstNameOnTextChange: (firstNameText: string) => void;
@@ -89,7 +89,6 @@ type ModalUserProps = {
   ) => Promise<User>;
   isError: undefined | Error;
   isLoading: boolean | undefined;
-  id: string;
   showModal: (open: boolean) => void;
   open: boolean;
   user: User;
@@ -98,8 +97,8 @@ type ModalUserProps = {
 
 export default function FormUser(p: ModalUserProps) {
   const { state: s, actions } = useLocalStore(config);
+
   const ariaLabel = { "aria-label": "description" };
-  const user = useContext(UserContext);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -130,18 +129,19 @@ export default function FormUser(p: ModalUserProps) {
     actions.setRequireImageUrl(s.imageUrl);
     if (validateForm(s.firstNameText, s.lastNameText, s.imageUrl)) {
       p.action(
-        user.id,
+        p.user.id,
         s.firstNameText,
         s.lastNameText,
         s.birthdateText,
         s.imageUrl
       );
-      p.showModal(false);
       if (p.isError) {
         actions.firstNameOnTextChange(s.firstNameText);
         actions.lastNameOnTextChange(s.lastNameText);
         actions.birthdateOnTextChange(s.birthdateText);
         actions.imageUrlOnTextChange(s.imageUrl);
+      } else {
+        p.showModal(false);
       }
     }
   };
@@ -187,7 +187,7 @@ export default function FormUser(p: ModalUserProps) {
                 inputProps={ariaLabel}
                 onChange={handleFirstNameTextChange}
                 variant="outlined"
-                defaultValue={user.firstName}
+                defaultValue={p.user.firstName}
               />
             ) : (
               <TextField
@@ -199,7 +199,7 @@ export default function FormUser(p: ModalUserProps) {
                 onChange={handleFirstNameTextChange}
                 variant="outlined"
                 helperText="Required"
-                defaultValue={user.lastName}
+                defaultValue={p.user.lastName}
               />
             )}
             {s.requireLastName ? (
@@ -209,7 +209,7 @@ export default function FormUser(p: ModalUserProps) {
                 inputProps={ariaLabel}
                 onChange={handleLastNameTextChange}
                 variant="outlined"
-                defaultValue={user.lastName}
+                defaultValue={p.user.lastName}
               />
             ) : (
               <TextField
@@ -221,7 +221,7 @@ export default function FormUser(p: ModalUserProps) {
                 onChange={handleLastNameTextChange}
                 variant="outlined"
                 helperText="Required"
-                defaultValue={user.lastName}
+                defaultValue={p.user.lastName}
               />
             )}
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -229,7 +229,7 @@ export default function FormUser(p: ModalUserProps) {
                 label="Birthdate"
                 // TODO:
                 onChange={handleBirthdateTextChange as any}
-                defaultValue={dayjs(user.birthdate) as any}
+                defaultValue={dayjs(p.user.birthdate) as any}
               />
             </LocalizationProvider>
             {s.requireImageUrl ? (
@@ -239,7 +239,7 @@ export default function FormUser(p: ModalUserProps) {
                 inputProps={ariaLabel}
                 onChange={handleImageUrlTextChange}
                 variant="outlined"
-                defaultValue={user.imageUrl}
+                defaultValue={p.user.imageUrl}
               />
             ) : (
               <TextField
@@ -250,14 +250,14 @@ export default function FormUser(p: ModalUserProps) {
                 onChange={handleImageUrlTextChange}
                 variant="outlined"
                 helperText="Must be a link"
-                defaultValue={user.imageUrl}
+                defaultValue={p.user.imageUrl}
               />
             )}
             <Button
               onClick={handleAction}
               disabled={p.isLoading}
               variant="contained"
-              color="primary"
+              color="secondary"
             >
               Submit
             </Button>

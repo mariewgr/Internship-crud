@@ -6,24 +6,21 @@ import {
   useMediaQuery,
   useTheme,
 } from "@material-ui/core";
-import { Alert } from "@mui/material";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
-import { UserContext } from "./UserRow";
+import UsersContext, { User } from "../contexts/UsersContext";
 
 type DialogDeleteProps = {
   open: boolean;
-  isError: Error | undefined;
   setOpen: (bool: boolean) => void;
-  deleteUser: (id: string) => void;
-  isLoading: boolean | undefined;
   id: string;
+  action: (userId: string) => Promise<unknown>;
 };
 export default function DialogDelete(p: DialogDeleteProps) {
-  const { open, isError, setOpen, deleteUser, isLoading } = p;
+  const { open, setOpen, action } = p;
+  const { loadingMap } = useContext(UsersContext);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const user = useContext(UserContext);
 
   return (
     <Dialog
@@ -32,9 +29,6 @@ export default function DialogDelete(p: DialogDeleteProps) {
       onClose={() => setOpen(false)}
       aria-labelledby="responsive-dialog-title"
     >
-      {isError && (
-        <Alert severity="error">This is an error alert — check it out!</Alert>
-      )}
       <DialogTitle id="responsive-dialog-title">Confirm delete</DialogTitle>
       <DialogActions>
         <Button onClick={() => setOpen(false)} style={{ color: "grey" }}>
@@ -43,10 +37,10 @@ export default function DialogDelete(p: DialogDeleteProps) {
         <Link to={"/"}>
           <Button
             onClick={() => {
-              deleteUser(user.id); //p.id
+              action(p.id);
               setOpen(false);
             }}
-            disabled={isLoading}
+            disabled={loadingMap.deleteUser}
             style={{ color: "red" }}
           >
             Delete

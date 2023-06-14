@@ -1,3 +1,14 @@
 dt {
     font-weight: bold;
   }
+
+  dl {
+    align-content: center;
+  }
+
+  .grid-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Ajustez cette valeur selon vos besoins */
+  }
+  

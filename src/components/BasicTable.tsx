@@ -6,9 +6,8 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { User, UsersContext, UsersListActions } from "../App";
+import { User, UsersContext } from "../contexts/UsersContext";
 import UserRow from "./UserRow";
-import { ErrorMap, LoadingMap } from "state-decorator";
 import { useContext } from "react";
 
 const useStyles = makeStyles({
@@ -19,22 +18,18 @@ const useStyles = makeStyles({
 
 type BasicTableProps = {
   users: User[];
-  rows: string[];
-  loadingMap: LoadingMap<UsersListActions>;
-  errorMap: ErrorMap<UsersListActions>;
-} & Pick<UsersListActions, "deleteUser"> &
-  Pick<UsersListActions, "updateUser">;
+};
 
 export default function BasicTable(p: BasicTableProps) {
   const classes = useStyles();
-  const users = useContext(UsersContext);
+  const rows = ["Id User", "First name", "Last name", "Actions"];
 
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            {p.rows.map((row) => (
+            {rows.map((row) => (
               <TableCell align="center">
                 <p style={{ fontWeight: "bold" }}>{row}</p>
               </TableCell>
@@ -43,13 +38,7 @@ export default function BasicTable(p: BasicTableProps) {
         </TableHead>
         <TableBody>
           {p.users.map((user: User) => (
-            <UserRow
-              user={user}
-              deleteUser={p.deleteUser}
-              updateUser={p.updateUser}
-              loadingMap={p.loadingMap}
-              errorMap={p.errorMap}
-            />
+            <UserRow user={user} />
           ))}
         </TableBody>
       </Table>
