@@ -6,9 +6,12 @@ import {
   AppBar,
   Box,
   Button,
+  Checkbox,
   Container,
   Fab,
+  FormControlLabel,
   InputBase,
+  TextField,
   Toolbar,
   alpha,
   styled,
@@ -16,6 +19,7 @@ import {
 import UsersContext from "../contexts/UsersContext";
 import { ChangeEvent, useContext, useState } from "react";
 import { Alert } from "@mui/material";
+import dayjs from "dayjs";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -31,16 +35,6 @@ const Search = styled("div")(({ theme }) => ({
     marginLeft: theme.spacing(3),
     width: "auto",
   },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
@@ -68,17 +62,55 @@ export default function HomePage() {
   } = useContext(UsersContext);
 
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [year, setYear] = useState<number>(null);
+  const [inputYear, setInputYear] = useState<string>("");
+  const [checked, setChecked] = useState(false);
+  const [isANumber, setIsANumber] = useState(true);
+  const ariaLabel = { "aria-label": "description" };
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value.toLowerCase());
+    filteredUsers();
   };
 
-  const searchedUsers = users.filter(
-    (user) =>
-      user.firstName.toLowerCase().includes(searchTerm) ||
-      user.lastName.toLowerCase().includes(searchTerm) ||
-      user.id.toLowerCase().includes(searchTerm)
-  );
+  const filteredUsers = () => {
+    var searchedUsers = users.filter(
+      (user) =>
+        user.firstName.toLowerCase().includes(searchTerm) ||
+        user.lastName.toLowerCase().includes(searchTerm) ||
+        user.id.toLowerCase().includes(searchTerm)
+    );
+    if (checked) {
+      searchedUsers = searchedUsers.filter((user) => user.birthdate !== null);
+    }
+    if (year > 1800) {
+      searchedUsers = users.filter(
+        (user) =>
+          user.birthdate !== null && dayjs(user.birthdate).year() === year
+      );
+    }
+
+    return searchedUsers;
+  };
+  const handleYearChoice = (event: ChangeEvent<HTMLInputElement>) => {
+    setInputYear(event.target.value);
+    console.log(inputYear);
+    if (parseInt(event.target.value)) {
+      setYear(parseInt(event.target.value));
+      setIsANumber(true);
+    } else if (event.target.value === "") {
+      setYear(0);
+      setIsANumber(true);
+    } else {
+      setIsANumber(false);
+    }
+    filteredUsers();
+  };
+
+  const handleCheckBox = () => {
+    setChecked(!checked);
+    filteredUsers();
+  };
 
   return (
     <>
@@ -113,6 +145,41 @@ export default function HomePage() {
           onChange={handleSearch}
         />
       </Search>
+      <Box
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <FormControlLabel
+          control={<Checkbox />}
+          label="Birthdate known"
+          color="secondary"
+          onClick={handleCheckBox}
+        />
+        {isANumber ? (
+          <TextField
+            value={inputYear}
+            placeholder="ex: 1990"
+            inputProps={ariaLabel}
+            onChange={handleYearChoice}
+            variant="outlined"
+            label="Year of Birth"
+          />
+        ) : (
+          <TextField
+            error
+            value={inputYear}
+            label="Year of Birth"
+            placeholder="ex: 1990"
+            inputProps={ariaLabel}
+            onChange={handleYearChoice}
+            variant="outlined"
+            helperText="Must be a number"
+          />
+        )}
+      </Box>
       <Container style={{ alignContent: "center" }}>
         <FormUser
           action={createUser}
@@ -129,7 +196,7 @@ export default function HomePage() {
           }}
           title="Create User"
         ></FormUser>
-        <BasicTable users={searchedUsers} />
+        <BasicTable users={filteredUsers()} />
         <Fab
           color="secondary"
           aria-label="add"
