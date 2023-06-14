@@ -84,7 +84,7 @@ export default function HomePage() {
       searchedUsers = searchedUsers.filter((user) => user.birthdate !== null);
     }
     if (year > 1800) {
-      searchedUsers = users.filter(
+      searchedUsers = searchedUsers.filter(
         (user) =>
           user.birthdate !== null && dayjs(user.birthdate).year() === year
       );
@@ -130,28 +130,31 @@ export default function HomePage() {
       {errorMap.deleteUser && (
         <Alert severity="error">This is an error alert — check it out!</Alert>
       )}
-      <Search
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <SearchIcon />
-        <StyledInputBase
-          placeholder="  Search…"
-          inputProps={{ "aria-label": "search" }}
-          style={{ padding: 3 }}
-          onChange={handleSearch}
-        />
-      </Search>
       <Box
         style={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          paddingTop: 5,
+          paddingBottom: 5,
         }}
       >
+        <Search
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <SearchIcon />
+          <StyledInputBase
+            placeholder="  Search…"
+            inputProps={{ "aria-label": "search" }}
+            style={{ padding: 3 }}
+            onChange={handleSearch}
+          />
+        </Search>
+        <p style={{ paddingRight: 40 }}>Filters:</p>
         <FormControlLabel
           control={<Checkbox />}
           label="Birthdate known"
@@ -191,7 +194,7 @@ export default function HomePage() {
             id: "",
             firstName: "",
             lastName: "",
-            birthdate: null,
+            birthdate: dayjs("1900-01-01"),
             imageUrl: "",
           }}
           title="Create User"

@@ -112,7 +112,7 @@ export default function FormUser(p: ModalUserProps) {
   };
 
   const handleBirthdateTextChange = (event: ChangeEvent<HTMLInputElement>) => {
-    actions.birthdateOnTextChange(dayjs(event as unknown as string));
+    actions.birthdateOnTextChange(dayjs(event.target.value));
   };
 
   const handleImageUrlTextChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -128,13 +128,18 @@ export default function FormUser(p: ModalUserProps) {
     actions.setRequireLastName(s.lastNameText);
     actions.setRequireImageUrl(s.imageUrl);
     if (validateForm(s.firstNameText, s.lastNameText, s.imageUrl)) {
-      p.action(
-        p.user.id,
-        s.firstNameText,
-        s.lastNameText,
-        s.birthdateText,
-        s.imageUrl
-      );
+      console.log(dayjs(s.birthdateText) === dayjs("1900-01-01"));
+      if (dayjs(s.birthdateText) === dayjs("1900-01-01")) {
+        p.action(p.user.id, s.firstNameText, s.lastNameText, null, s.imageUrl);
+      } else {
+        p.action(
+          p.user.id,
+          s.firstNameText,
+          s.lastNameText,
+          s.birthdateText,
+          s.imageUrl
+        );
+      }
       if (p.isError) {
         actions.firstNameOnTextChange(s.firstNameText);
         actions.lastNameOnTextChange(s.lastNameText);
@@ -227,9 +232,8 @@ export default function FormUser(p: ModalUserProps) {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 label="Birthdate"
-                // TODO:
-                onChange={handleBirthdateTextChange as any}
-                defaultValue={dayjs(p.user.birthdate) as any}
+                onChange={handleBirthdateTextChange}
+                defaultValue={dayjs(p.user.birthdate)}
               />
             </LocalizationProvider>
             {s.requireImageUrl ? (
