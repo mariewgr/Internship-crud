@@ -128,18 +128,13 @@ export default function FormUser(p: ModalUserProps) {
     actions.setRequireLastName(s.lastNameText);
     actions.setRequireImageUrl(s.imageUrl);
     if (validateForm(s.firstNameText, s.lastNameText, s.imageUrl)) {
-      console.log(dayjs(s.birthdateText) === dayjs("1900-01-01"));
-      if (dayjs(s.birthdateText) === dayjs("1900-01-01")) {
-        p.action(p.user.id, s.firstNameText, s.lastNameText, null, s.imageUrl);
-      } else {
-        p.action(
-          p.user.id,
-          s.firstNameText,
-          s.lastNameText,
-          s.birthdateText,
-          s.imageUrl
-        );
-      }
+      p.action(
+        p.user.id,
+        s.firstNameText,
+        s.lastNameText,
+        s.birthdateText,
+        s.imageUrl
+      );
       if (p.isError) {
         actions.firstNameOnTextChange(s.firstNameText);
         actions.lastNameOnTextChange(s.lastNameText);
@@ -243,13 +238,22 @@ export default function FormUser(p: ModalUserProps) {
                   defaultValue={p.user.lastName}
                 />
               )}
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label="Birthdate"
-                  onChange={handleBirthdateTextChange}
-                  defaultValue={dayjs(p.user.birthdate)}
-                />
-              </LocalizationProvider>
+              {p.user.birthdate === null ? (
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Birthdate"
+                    onChange={handleBirthdateTextChange}
+                  />
+                </LocalizationProvider>
+              ) : (
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Birthdate"
+                    onChange={handleBirthdateTextChange}
+                    defaultValue={dayjs(p.user.birthdate) as undefined}
+                  />
+                </LocalizationProvider>
+              )}
               {s.requireImageUrl ? (
                 <TextField
                   label="Image URL*"

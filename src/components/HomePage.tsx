@@ -272,7 +272,7 @@ export default function HomePage() {
               id: "",
               firstName: "",
               lastName: "",
-              birthdate: dayjs("1900-01-01"),
+              birthdate: null,
               imageUrl: "",
             }}
             title="Create User"
