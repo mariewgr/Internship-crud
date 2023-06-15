@@ -16,10 +16,11 @@ import {
   alpha,
   styled,
 } from "@material-ui/core";
-import UsersContext from "../contexts/UsersContext";
-import { ChangeEvent, useContext, useState } from "react";
+import UsersContext, { User } from "../contexts/UsersContext";
+import { ChangeEvent, useContext, useEffect } from "react";
 import { Alert } from "@mui/material";
 import dayjs from "dayjs";
+import useLocalStore, { StoreConfig } from "state-decorator";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -51,6 +52,86 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+export const filteredUsers = (
+  users: User[],
+  checked: boolean,
+  year: number,
+  searchTerm: string
+) => {
+  var searchedUsers = users.filter(
+    (user) =>
+      `${user.firstName} ${user.lastName} ${user.firstName}`
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .includes(searchTerm) ||
+      user.id
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .includes(searchTerm)
+  );
+  if (checked) {
+    searchedUsers = searchedUsers.filter((user) => user.birthdate !== null);
+  }
+  if (year > 1800) {
+    searchedUsers = searchedUsers.filter(
+      (user) => user.birthdate !== null && dayjs(user.birthdate).year() === year
+    );
+  }
+
+  return searchedUsers;
+};
+
+type Actions = {
+  setSearchTerm: (searchTerm: string) => void;
+  setYear: (year: number) => void;
+  setInputYear: (inputYear: string) => void;
+  setChecked: (checked: boolean) => void;
+  setIsANumber: (IsANumber: boolean) => void;
+  setUsers: (users: User[]) => void;
+};
+
+export type State = {
+  searchTerm: string;
+  year: number;
+  inputYear: string;
+  checked: boolean;
+  isANumber: boolean;
+  users: User[];
+};
+
+type DerivedState = {
+  filteredUsers: User[];
+};
+// Initial state & actions
+export const configHomePage: StoreConfig<State, Actions, any, DerivedState> = {
+  getInitialState: () => ({
+    searchTerm: "",
+    year: 0,
+    inputYear: "",
+    checked: false,
+    isANumber: true,
+    users: [],
+  }),
+
+  actions: {
+    setSearchTerm: ({ args: [searchTerm] }) => ({ searchTerm }),
+    setYear: ({ args: [year] }) => ({ year }),
+    setInputYear: ({ args: [inputYear] }) => ({ inputYear }),
+    setChecked: ({ args: [checked] }) => ({ checked }),
+    setIsANumber: ({ args: [isANumber] }) => ({ isANumber }),
+    setUsers: ({ args: [users] }) => ({ users }),
+  },
+  derivedState: {
+    filteredUsers: {
+      getDeps: ({ s }) => [s.searchTerm, s.checked, s.year, s.users],
+      get: ({ s }) => filteredUsers(s.users, s.checked, s.year, s.searchTerm),
+    },
+  },
+  logEnabled: true,
+};
+
 export default function HomePage() {
   const {
     users,
@@ -60,63 +141,31 @@ export default function HomePage() {
     loadingMap,
     errorMap,
   } = useContext(UsersContext);
-
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [year, setYear] = useState<number>(null);
-  const [inputYear, setInputYear] = useState<string>("");
-  const [checked, setChecked] = useState(false);
-  const [isANumber, setIsANumber] = useState(true);
+  const { state: s, actions: a } = useLocalStore(configHomePage);
   const ariaLabel = { "aria-label": "description" };
 
+  useEffect(() => {
+    a.setUsers(users);
+  }, [users]);
+
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value.toLowerCase());
-    filteredUsers();
-  };
-
-  const filteredUsers = () => {
-    var searchedUsers = users.filter(
-      (user) =>
-        `${user.firstName} ${user.lastName} ${user.firstName}`
-          .toLowerCase()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .includes(searchTerm) ||
-        user.id
-          .toLowerCase()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .includes(searchTerm)
-    );
-    if (checked) {
-      searchedUsers = searchedUsers.filter((user) => user.birthdate !== null);
-    }
-    if (year > 1800) {
-      searchedUsers = searchedUsers.filter(
-        (user) =>
-          user.birthdate !== null && dayjs(user.birthdate).year() === year
-      );
-    }
-
-    return searchedUsers;
+    a.setSearchTerm(event.target.value.toLowerCase());
   };
   const handleYearChoice = (event: ChangeEvent<HTMLInputElement>) => {
-    setInputYear(event.target.value);
-    console.log(inputYear);
+    a.setInputYear(event.target.value);
     if (parseInt(event.target.value)) {
-      setYear(parseInt(event.target.value));
-      setIsANumber(true);
+      a.setYear(parseInt(event.target.value));
+      a.setIsANumber(true);
     } else if (event.target.value === "") {
-      setYear(0);
-      setIsANumber(true);
+      a.setYear(0);
+      a.setIsANumber(true);
     } else {
-      setIsANumber(false);
+      a.setIsANumber(false);
     }
-    filteredUsers();
   };
 
   const handleCheckBox = () => {
-    setChecked(!checked);
-    filteredUsers();
+    a.setChecked(!s.checked);
   };
 
   return (
@@ -187,9 +236,9 @@ export default function HomePage() {
                 color="secondary"
                 onClick={handleCheckBox}
               />
-              {isANumber ? (
+              {s.isANumber ? (
                 <TextField
-                  value={inputYear}
+                  value={s.inputYear}
                   placeholder="ex: 1990"
                   inputProps={ariaLabel}
                   onChange={handleYearChoice}
@@ -200,7 +249,7 @@ export default function HomePage() {
               ) : (
                 <TextField
                   error
-                  value={inputYear}
+                  value={s.inputYear}
                   label="Year of Birth"
                   placeholder="ex: 1990"
                   inputProps={ariaLabel}
@@ -228,7 +277,7 @@ export default function HomePage() {
             }}
             title="Create User"
           ></FormUser>
-          <BasicTable users={filteredUsers()} />
+          <BasicTable users={s.filteredUsers} />
           <Button
             onClick={() => showCreateModal(true)}
             style={{ color: "#fff", borderRadius: 150 }}
@@ -240,6 +289,8 @@ export default function HomePage() {
                 position: "fixed",
                 bottom: 16,
                 right: 16,
+                background: "orange",
+                color: "white",
               }}
             >
               <AddIcon />

@@ -46,16 +46,19 @@ export default function UserInfo() {
           style={{ alignContent: "center" }}
         >
           <div style={{ background: "white" }}>
-            <Grid container item direction="row">
-              <Grid
-                item
-                xs={12}
-                style={{ alignContent: "center", alignItems: "center" }}
-              >
+            <Grid
+              container
+              item
+              direction="row"
+              style={{
+                justifyContent: "center",
+              }}
+            >
+              <Grid item xs={12}>
                 <dd>
                   <img
                     src={user.imageUrl}
-                    style={{ borderRadius: 200, margin: 10, padding: 10 }}
+                    style={{ borderRadius: 200, margin: 15 }}
                   ></img>
                 </dd>
               </Grid>
@@ -106,11 +109,12 @@ export default function UserInfo() {
           </div>
         </Grid>
       </dl>
-      <Button
-        onClick={() => setOpenDelete(true)}
-        style={{ position: "fixed", top: 75, right: 86, borderRadius: 150 }}
-      >
-        <Fab color="secondary" aria-label="delete">
+      <Button onClick={() => setOpenDelete(true)} style={{ borderRadius: 150 }}>
+        <Fab
+          color="secondary"
+          aria-label="delete"
+          style={{ position: "fixed", top: 75, right: 86 }}
+        >
           <DeleteIcon />
         </Fab>
       </Button>
@@ -123,15 +127,16 @@ export default function UserInfo() {
       <Button
         onClick={() => setOpenUpdate(true)}
         style={{
-          position: "fixed",
-          top: 75,
-          right: 16,
           borderRadius: 150,
         }}
       >
         <Fab
+          className="fabEdit"
           aria-label="edit"
           style={{
+            position: "fixed",
+            top: 75,
+            right: 16,
             background: "orange",
             color: "white",
           }}

@@ -11,4 +11,9 @@ dt {
     justify-content: center;
     gap: 20px; /* Ajustez cette valeur selon vos besoins */
   }
+
+ Button:hover {
+    background: maroon;
+    color: black
+  }
   

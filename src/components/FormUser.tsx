@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -7,13 +8,13 @@ import {
   useMediaQuery,
   useTheme,
 } from "@material-ui/core";
-import { ChangeEvent, useContext, useEffect } from "react";
+import { ChangeEvent, useEffect } from "react";
 import { useLocalStore, StoreConfig } from "state-decorator";
 import { Alert, Stack } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import UsersContext, { User } from "../contexts/UsersContext";
+import { User } from "../contexts/UsersContext";
 
 export type Actions = {
   firstNameOnTextChange: (firstNameText: string) => void;
@@ -170,100 +171,132 @@ export default function FormUser(p: ModalUserProps) {
         )}
         <DialogTitle
           id="responsive-dialog-title"
-          style={{ textAlign: "center" }}
+          style={{
+            textAlign: "center",
+            verticalAlign: "text-bottom",
+            paddingTop: 0,
+          }}
         >
-          {p.title}
+          <p style={{ fontSize: 30 }}>{p.title}</p>
         </DialogTitle>
-        <DialogActions>
+        <DialogActions style={{ minWidth: 300, justifyContent: "center" }}>
           <Stack
             component="form"
             sx={{
               width: "25ch",
+              pt: 0,
             }}
+            style={{ alignItems: "center", textAlign: "center" }}
             spacing={2}
             noValidate
             autoComplete="off"
           >
-            {s.requireFirstName ? (
-              <TextField
-                label="FirstName*"
-                placeholder="FirstName*"
-                inputProps={ariaLabel}
-                onChange={handleFirstNameTextChange}
-                variant="outlined"
-                defaultValue={p.user.firstName}
-              />
-            ) : (
-              <TextField
-                required
-                error
-                label="FirstName*"
-                placeholder="FirstName*"
-                inputProps={ariaLabel}
-                onChange={handleFirstNameTextChange}
-                variant="outlined"
-                helperText="Required"
-                defaultValue={p.user.lastName}
-              />
-            )}
-            {s.requireLastName ? (
-              <TextField
-                label="LastName*"
-                placeholder="LastName*"
-                inputProps={ariaLabel}
-                onChange={handleLastNameTextChange}
-                variant="outlined"
-                defaultValue={p.user.lastName}
-              />
-            ) : (
-              <TextField
-                error
-                required
-                label="LastName*"
-                placeholder="LastName*"
-                inputProps={ariaLabel}
-                onChange={handleLastNameTextChange}
-                variant="outlined"
-                helperText="Required"
-                defaultValue={p.user.lastName}
-              />
-            )}
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Birthdate"
-                onChange={handleBirthdateTextChange}
-                defaultValue={dayjs(p.user.birthdate)}
-              />
-            </LocalizationProvider>
-            {s.requireImageUrl ? (
-              <TextField
-                label="Image URL*"
-                placeholder="Image URL*"
-                inputProps={ariaLabel}
-                onChange={handleImageUrlTextChange}
-                variant="outlined"
-                defaultValue={p.user.imageUrl}
-              />
-            ) : (
-              <TextField
-                error
-                label="Image URL*"
-                placeholder="Image URL*"
-                inputProps={ariaLabel}
-                onChange={handleImageUrlTextChange}
-                variant="outlined"
-                helperText="Must be a link"
-                defaultValue={p.user.imageUrl}
-              />
-            )}
-            <Button
-              onClick={handleAction}
-              disabled={p.isLoading}
-              variant="contained"
-              color="secondary"
+            <Stack
+              style={{
+                display: "flex",
+                alignItems: "center",
+                textAlign: "center",
+              }}
+              spacing={2}
             >
-              Submit
-            </Button>
+              {s.requireFirstName ? (
+                <TextField
+                  label="FirstName*"
+                  placeholder="FirstName*"
+                  inputProps={ariaLabel}
+                  onChange={handleFirstNameTextChange}
+                  variant="outlined"
+                  defaultValue={p.user.firstName}
+                />
+              ) : (
+                <TextField
+                  required
+                  error
+                  label="FirstName*"
+                  placeholder="FirstName*"
+                  inputProps={ariaLabel}
+                  onChange={handleFirstNameTextChange}
+                  variant="outlined"
+                  helperText="Required"
+                  defaultValue={p.user.lastName}
+                />
+              )}
+              {s.requireLastName ? (
+                <TextField
+                  label="LastName*"
+                  placeholder="LastName*"
+                  inputProps={ariaLabel}
+                  onChange={handleLastNameTextChange}
+                  variant="outlined"
+                  defaultValue={p.user.lastName}
+                />
+              ) : (
+                <TextField
+                  error
+                  required
+                  label="LastName*"
+                  placeholder="LastName*"
+                  inputProps={ariaLabel}
+                  onChange={handleLastNameTextChange}
+                  variant="outlined"
+                  helperText="Required"
+                  defaultValue={p.user.lastName}
+                />
+              )}
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Birthdate"
+                  onChange={handleBirthdateTextChange}
+                  defaultValue={dayjs(p.user.birthdate)}
+                />
+              </LocalizationProvider>
+              {s.requireImageUrl ? (
+                <TextField
+                  label="Image URL*"
+                  placeholder="Image URL*"
+                  inputProps={ariaLabel}
+                  onChange={handleImageUrlTextChange}
+                  variant="outlined"
+                  defaultValue={p.user.imageUrl}
+                />
+              ) : (
+                <TextField
+                  error
+                  label="Image URL*"
+                  placeholder="Image URL*"
+                  inputProps={ariaLabel}
+                  onChange={handleImageUrlTextChange}
+                  variant="outlined"
+                  helperText="Must be a link"
+                  defaultValue={p.user.imageUrl}
+                />
+              )}
+            </Stack>
+            <Box
+              style={{
+                display: "flex",
+                alignContent: "center",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Button
+                onClick={handleAction}
+                disabled={p.isLoading}
+                variant="contained"
+                style={{ marginRight: 7 }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleAction}
+                disabled={p.isLoading}
+                variant="contained"
+                style={{ background: "orange", color: "white" }}
+              >
+                Submit
+              </Button>
+            </Box>
           </Stack>
         </DialogActions>
       </Dialog>
