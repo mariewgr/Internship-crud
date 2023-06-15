@@ -13,7 +13,6 @@ import { Alert, Stack } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { UserContext } from "./UserRow";
 import UsersContext, { User } from "../contexts/UsersContext";
 
 export type Actions = {

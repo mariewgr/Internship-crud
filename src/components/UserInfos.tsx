@@ -45,94 +45,109 @@ export default function UserInfo() {
           spacing={3}
           style={{ alignContent: "center" }}
         >
-          <Grid container item direction="row">
-            <Grid item xs={4}></Grid>
-            <Grid item xs={2}>
-              <dt>User Id:</dt>
+          <div style={{ background: "white" }}>
+            <Grid container item direction="row">
+              <Grid
+                item
+                xs={12}
+                style={{ alignContent: "center", alignItems: "center" }}
+              >
+                <dd>
+                  <img
+                    src={user.imageUrl}
+                    style={{ borderRadius: 200, margin: 10, padding: 10 }}
+                  ></img>
+                </dd>
+              </Grid>
             </Grid>
-            <Grid item xs={4}>
-              <dd>{userId}</dd>
+            <Grid container item direction="row" style={{ paddingLeft: 60 }}>
+              <Grid item xs={3}>
+                <dt>User Id:</dt>
+              </Grid>
+              <Grid item xs={8}>
+                <dd>{userId}</dd>
+              </Grid>
             </Grid>
-          </Grid>
-          <Grid container item direction="row">
-            <Grid item xs={4}></Grid>
-            <Grid item xs={2}>
-              <dt>Firstname:</dt>
+            <Grid container item direction="row" style={{ paddingLeft: 60 }}>
+              <Grid item xs={3}>
+                <dt>Firstname:</dt>
+              </Grid>
+              <Grid item xs={8}>
+                <dd>{user.firstName}</dd>
+              </Grid>
             </Grid>
-            <Grid item xs={2}>
-              <dd>{user.firstName}</dd>
+            <Grid container item direction="row" style={{ paddingLeft: 60 }}>
+              <Grid item xs={3}>
+                <dt>Lastname:</dt>
+              </Grid>
+              <Grid item xs={8}>
+                <dd>{user.lastName}</dd>
+              </Grid>
             </Grid>
-          </Grid>
-          <Grid container item direction="row">
-            <Grid item xs={4}></Grid>
-            <Grid item xs={2}>
-              <dt>Lastname:</dt>
+            <Grid
+              container
+              item
+              direction="row"
+              style={{ paddingLeft: 60, marginBottom: 20 }}
+            >
+              <Grid item xs={3}>
+                <dt>Birthday:</dt>
+              </Grid>
+              <Grid item xs={8}>
+                <dd>
+                  {user.birthdate !== null ? (
+                    <div>{dayjs(user.birthdate).format("DD-MMMM-YYYY")}</div>
+                  ) : (
+                    <div>No Birthdate registered</div>
+                  )}
+                </dd>
+              </Grid>
             </Grid>
-            <Grid item xs={2}>
-              <dd>{user.lastName}</dd>
-            </Grid>
-          </Grid>
-          <Grid container item direction="row">
-            <Grid item xs={4}></Grid>
-            <Grid item xs={2}>
-              <dt>Birthday:</dt>
-            </Grid>
-            <Grid item xs={2}>
-              <dd>
-                {user.birthdate !== null ? (
-                  <div>{dayjs(user.birthdate).format("DD-MMMM-YYYY")}</div>
-                ) : (
-                  <div>No Birthdate registered</div>
-                )}
-              </dd>
-            </Grid>
-          </Grid>
-          <Grid container item direction="row">
-            <Grid item xs={4}></Grid>
-            <Grid item xs={2}>
-              <dt>Image:</dt>
-            </Grid>
-            <Grid item xs={2}>
-              <dd>
-                <img src={user.imageUrl}></img>
-              </dd>
-            </Grid>
-          </Grid>
+          </div>
         </Grid>
-        <Fab
-          color="secondary"
-          aria-label="delete"
-          style={{ position: "fixed", bottom: 16, left: 16 }}
-        >
-          <Button onClick={() => setOpenDelete(true)} style={{ color: "#fff" }}>
-            <DeleteIcon />
-          </Button>
-          <DialogDelete
-            open={openDelete}
-            setOpen={setOpenDelete}
-            id={userId}
-            action={deleteUser}
-          />
-        </Fab>
-        <Fab
-          color="secondary"
-          aria-label="edit"
-          style={{ position: "fixed", bottom: 16, right: 16 }}
-        >
-          <Button onClick={() => setOpenUpdate(true)} style={{ color: "#fff" }}>
-            <EditIcon />
-          </Button>
-        </Fab>
-        <FormUser
-          action={updateUser}
-          showModal={setOpenUpdate}
-          open={openUpdate}
-          isLoading={loadingMap.updateUser}
-          isError={errorMap.updateUser}
-          user={user}
-          title="Edit User"
-        />
       </dl>
+      <Button
+        onClick={() => setOpenDelete(true)}
+        style={{ position: "fixed", top: 75, right: 86, borderRadius: 150 }}
+      >
+        <Fab color="secondary" aria-label="delete">
+          <DeleteIcon />
+        </Fab>
+      </Button>
+      <DialogDelete
+        open={openDelete}
+        setOpen={setOpenDelete}
+        id={userId}
+        action={deleteUser}
+      />
+      <Button
+        onClick={() => setOpenUpdate(true)}
+        style={{
+          position: "fixed",
+          top: 75,
+          right: 16,
+          borderRadius: 150,
+        }}
+      >
+        <Fab
+          aria-label="edit"
+          style={{
+            background: "orange",
+            color: "white",
+          }}
+        >
+          <EditIcon />
+        </Fab>
+      </Button>
+      <FormUser
+        action={updateUser}
+        showModal={setOpenUpdate}
+        open={openUpdate}
+        isLoading={loadingMap.updateUser}
+        isError={errorMap.updateUser}
+        user={user}
+        title="Edit User"
+      />
     </>
   );
 }

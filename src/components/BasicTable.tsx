@@ -8,7 +8,6 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { User, UsersContext } from "../contexts/UsersContext";
 import UserRow from "./UserRow";
-import { useContext } from "react";
 
 const useStyles = makeStyles({
   table: {
@@ -21,12 +20,11 @@ type BasicTableProps = {
 };
 
 export default function BasicTable(p: BasicTableProps) {
-  const classes = useStyles();
   const rows = ["Id User", "First name", "Last name", "Actions"];
 
   return (
     <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="simple table">
+      <Table>
         <TableHead>
           <TableRow>
             {rows.map((row) => (

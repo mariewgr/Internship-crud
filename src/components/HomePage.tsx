@@ -76,9 +76,16 @@ export default function HomePage() {
   const filteredUsers = () => {
     var searchedUsers = users.filter(
       (user) =>
-        user.firstName.toLowerCase().includes(searchTerm) ||
-        user.lastName.toLowerCase().includes(searchTerm) ||
-        user.id.toLowerCase().includes(searchTerm)
+        `${user.firstName} ${user.lastName} ${user.firstName}`
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .includes(searchTerm) ||
+        user.id
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .includes(searchTerm)
     );
     if (checked) {
       searchedUsers = searchedUsers.filter((user) => user.birthdate !== null);
@@ -114,105 +121,132 @@ export default function HomePage() {
 
   return (
     <>
-      <AppBar component="nav">
-        <Toolbar
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            fontSize: 30,
-          }}
-        >
-          <Box style={{ paddingRight: 3 }}>Users List</Box>
-        </Toolbar>
-      </AppBar>
-      <Toolbar id="back-to-top-anchor" />
-      {errorMap.deleteUser && (
-        <Alert severity="error">This is an error alert — check it out!</Alert>
-      )}
-      <Box
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          paddingTop: 5,
-          paddingBottom: 5,
-        }}
-      >
-        <Search
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <SearchIcon />
-          <StyledInputBase
-            placeholder="  Search…"
-            inputProps={{ "aria-label": "search" }}
-            style={{ padding: 3 }}
-            onChange={handleSearch}
-          />
-        </Search>
-        <p style={{ paddingRight: 40 }}>Filters:</p>
-        <FormControlLabel
-          control={<Checkbox />}
-          label="Birthdate known"
-          color="secondary"
-          onClick={handleCheckBox}
-        />
-        {isANumber ? (
-          <TextField
-            value={inputYear}
-            placeholder="ex: 1990"
-            inputProps={ariaLabel}
-            onChange={handleYearChoice}
-            variant="outlined"
-            label="Year of Birth"
-          />
-        ) : (
-          <TextField
-            error
-            value={inputYear}
-            label="Year of Birth"
-            placeholder="ex: 1990"
-            inputProps={ariaLabel}
-            onChange={handleYearChoice}
-            variant="outlined"
-            helperText="Must be a number"
-          />
+      <Box className="container">
+        <AppBar component="nav">
+          <Toolbar
+            id="back-to-top-anchor"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              fontSize: 30,
+            }}
+          >
+            <Box style={{ paddingRight: 3 }}>Users List</Box>
+          </Toolbar>
+        </AppBar>
+        {errorMap.deleteUser && (
+          <Alert severity="error">This is an error alert — check it out!</Alert>
         )}
-      </Box>
-      <Container style={{ alignContent: "center" }}>
-        <FormUser
-          action={createUser}
-          isError={errorMap.createUser}
-          isLoading={loadingMap.createUser}
-          showModal={showCreateModal}
-          open={openCreate}
-          user={{
-            id: "",
-            firstName: "",
-            lastName: "",
-            birthdate: dayjs("1900-01-01"),
-            imageUrl: "",
+        <Box
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            paddingTop: 5,
+            paddingBottom: 10,
+            paddingRight: 10,
+            background: "lightgrey",
           }}
-          title="Create User"
-        ></FormUser>
-        <BasicTable users={filteredUsers()} />
-        <Fab
-          color="secondary"
-          aria-label="add"
-          style={{ position: "fixed", bottom: 16, right: 16 }}
         >
+          <Container
+            style={{
+              padding: 5,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <div
+              style={{
+                background: "white",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 5,
+              }}
+            >
+              <Search
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <SearchIcon />
+                <StyledInputBase
+                  placeholder="  Search…"
+                  inputProps={{ "aria-label": "search" }}
+                  onChange={handleSearch}
+                />
+              </Search>
+              <p style={{ paddingRight: 40 }}>Filters:</p>
+              <FormControlLabel
+                control={<Checkbox />}
+                label="Birthdate known"
+                color="secondary"
+                onClick={handleCheckBox}
+              />
+              {isANumber ? (
+                <TextField
+                  value={inputYear}
+                  placeholder="ex: 1990"
+                  inputProps={ariaLabel}
+                  onChange={handleYearChoice}
+                  variant="outlined"
+                  label="Year of Birth"
+                  style={{ margin: 10 }}
+                />
+              ) : (
+                <TextField
+                  error
+                  value={inputYear}
+                  label="Year of Birth"
+                  placeholder="ex: 1990"
+                  inputProps={ariaLabel}
+                  onChange={handleYearChoice}
+                  variant="outlined"
+                  helperText="Must be a number"
+                />
+              )}
+            </div>
+          </Container>
+        </Box>
+        <Container style={{ alignContent: "center" }}>
+          <FormUser
+            action={createUser}
+            isError={errorMap.createUser}
+            isLoading={loadingMap.createUser}
+            showModal={showCreateModal}
+            open={openCreate}
+            user={{
+              id: "",
+              firstName: "",
+              lastName: "",
+              birthdate: dayjs("1900-01-01"),
+              imageUrl: "",
+            }}
+            title="Create User"
+          ></FormUser>
+          <BasicTable users={filteredUsers()} />
           <Button
             onClick={() => showCreateModal(true)}
-            style={{ color: "#fff" }}
+            style={{ color: "#fff", borderRadius: 150 }}
           >
-            <AddIcon />
+            <Fab
+              color="secondary"
+              aria-label="add"
+              style={{
+                position: "fixed",
+                bottom: 16,
+                right: 16,
+              }}
+            >
+              <AddIcon />
+            </Fab>
           </Button>
-        </Fab>
-      </Container>
+        </Container>
+      </Box>
     </>
   );
 }
