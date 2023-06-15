@@ -1,27 +1,67 @@
-import { useContext, useEffect, useState } from "react";
-import UsersContext, { UsersContextProvider } from "../contexts/UsersContext";
+import { useContext } from "react";
+import UsersContext from "../contexts/UsersContext";
 import { Link, useParams } from "react-router-dom";
 import "./UserInfo.css";
-import { AppBar, Box, Button, Fab, Grid, Toolbar } from "@material-ui/core";
+import {
+  AppBar,
+  Box,
+  Button,
+  Fab,
+  Toolbar,
+  useMediaQuery,
+  useTheme,
+} from "@material-ui/core";
 import DialogDelete from "./DialogDelete";
 import FormUser from "./FormUser";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import dayjs from "dayjs";
 import { Alert } from "@mui/material";
+import useLocalStore, { StoreConfig } from "state-decorator";
+import { setArgIn } from "state-decorator/helpers";
+import GrideUser from "./GridUser";
 
+type Actions = {
+  setOpenDelete: (openDelete: boolean) => void;
+  setOpenUpdate: (openUpdate: boolean) => void;
+  setNewImage: (newImage: string) => void;
+  setOpenImage: (openImage: boolean) => void;
+};
+
+export type UserInfosActions = Actions;
+
+type State = {
+  openDelete: boolean;
+  openUpdate: boolean;
+  newImage: string;
+  openImage: boolean;
+};
+
+export type UserInfosState = State;
+// Initial state & actions
+export const configUserInfo: StoreConfig<State, Actions> = {
+  getInitialState: () => ({
+    openDelete: false,
+    openUpdate: false,
+    openImage: false,
+    newImage: "",
+  }),
+
+  actions: {
+    setOpenDelete: setArgIn("openDelete"),
+    setOpenUpdate: setArgIn("openUpdate"),
+    setNewImage: setArgIn("newImage"),
+    setOpenImage: setArgIn("openImage"),
+  },
+  logEnabled: true,
+};
 export default function UserInfo() {
   const { userId } = useParams();
   const { users, updateUser, loadingMap, errorMap, deleteUser } =
     useContext(UsersContext);
 
-  const user = users.find((user) => user.id === userId);
-  const [openDelete, setOpenDelete] = useState(false);
-  const [openUpdate, setOpenUpdate] = useState(false);
+  const { state: s, actions: a } = useLocalStore(configUserInfo);
 
-  useEffect(() => {
-    console.log(users);
-  }, []);
+  const user = users.find((user) => user.id === userId);
 
   return (
     <>
@@ -38,78 +78,17 @@ export default function UserInfo() {
       {errorMap.deleteUser && (
         <Alert severity="error">This is an error alert — check it out!</Alert>
       )}
-      <dl>
-        <Grid
-          container
-          direction="column"
-          spacing={3}
-          style={{ alignContent: "center" }}
-        >
-          <div style={{ background: "white" }}>
-            <Grid
-              container
-              item
-              direction="row"
-              style={{
-                justifyContent: "center",
-              }}
-            >
-              <Grid item xs={12}>
-                <dd>
-                  <img
-                    src={user.imageUrl}
-                    style={{ borderRadius: 200, margin: 15 }}
-                  ></img>
-                </dd>
-              </Grid>
-            </Grid>
-            <Grid container item direction="row" style={{ paddingLeft: 60 }}>
-              <Grid item xs={3}>
-                <dt>User Id:</dt>
-              </Grid>
-              <Grid item xs={8}>
-                <dd>{userId}</dd>
-              </Grid>
-            </Grid>
-            <Grid container item direction="row" style={{ paddingLeft: 60 }}>
-              <Grid item xs={3}>
-                <dt>Firstname:</dt>
-              </Grid>
-              <Grid item xs={8}>
-                <dd>{user.firstName}</dd>
-              </Grid>
-            </Grid>
-            <Grid container item direction="row" style={{ paddingLeft: 60 }}>
-              <Grid item xs={3}>
-                <dt>Lastname:</dt>
-              </Grid>
-              <Grid item xs={8}>
-                <dd>{user.lastName}</dd>
-              </Grid>
-            </Grid>
-            <Grid
-              container
-              item
-              direction="row"
-              style={{ paddingLeft: 60, marginBottom: 20 }}
-            >
-              <Grid item xs={3}>
-                <dt>Birthday:</dt>
-              </Grid>
-              <Grid item xs={8}>
-                <dd>
-                  {user.birthdate !== null ? (
-                    <div>{dayjs(user.birthdate).format("DD-MMMM-YYYY")}</div>
-                  ) : (
-                    <div>No Birthdate registered</div>
-                  )}
-                </dd>
-              </Grid>
-            </Grid>
-          </div>
-        </Grid>
-      </dl>
-      <Button onClick={() => setOpenDelete(true)} style={{ borderRadius: 150 }}>
+      <GrideUser
+        user={user}
+        setNewImage={a.setNewImage}
+        setOpenImage={a.setOpenImage}
+        newImage={s.newImage}
+        openImage={s.openImage}
+      />
+      <Button
+        onClick={() => a.setOpenDelete(true)}
+        style={{ borderRadius: 150 }}
+      >
         <Fab
           color="secondary"
           aria-label="delete"
@@ -119,13 +98,13 @@ export default function UserInfo() {
         </Fab>
       </Button>
       <DialogDelete
-        open={openDelete}
-        setOpen={setOpenDelete}
+        open={s.openDelete}
+        setOpen={a.setOpenDelete}
         id={userId}
         action={deleteUser}
       />
       <Button
-        onClick={() => setOpenUpdate(true)}
+        onClick={() => a.setOpenUpdate(true)}
         style={{
           borderRadius: 150,
         }}
@@ -146,8 +125,8 @@ export default function UserInfo() {
       </Button>
       <FormUser
         action={updateUser}
-        showModal={setOpenUpdate}
-        open={openUpdate}
+        showModal={a.setOpenUpdate}
+        open={s.openUpdate}
         isLoading={loadingMap.updateUser}
         isError={errorMap.updateUser}
         user={user}

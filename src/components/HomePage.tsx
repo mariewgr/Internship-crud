@@ -283,7 +283,6 @@ export default function HomePage() {
             style={{ color: "#fff", borderRadius: 150 }}
           >
             <Fab
-              color="secondary"
               aria-label="add"
               style={{
                 position: "fixed",

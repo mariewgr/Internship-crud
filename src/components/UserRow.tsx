@@ -7,6 +7,7 @@ import DialogDelete from "./DialogDelete";
 import FormUser from "./FormUser";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import dayjs from "dayjs";
 
 type UserRowProps = {
   user: User;
@@ -33,12 +34,21 @@ export default function UserRow(p: UserRowProps) {
     <UserContext.Provider value={user}>
       <TableRow key={user.id}>
         <TableCell align="center" component="th" scope="user">
-          <Link to={`user/${user.id}`} className="link">
-            {user.id}
+          <Link
+            to={`user/${user.id}`}
+            className="link"
+            style={{ color: "black" }}
+          >
+            {user.firstName + " " + user.lastName}
           </Link>
         </TableCell>
-        <TableCell align="center">{user.firstName}</TableCell>
-        <TableCell align="center">{user.lastName}</TableCell>
+        <TableCell align="center">
+          {user.birthdate !== null ? (
+            <div>{dayjs(user.birthdate).format("DD-MMMM-YYYY")}</div>
+          ) : (
+            <div>No Birthdate registered</div>
+          )}
+        </TableCell>
         <TableCell align="center">
           <>
             <IconButton aria-label="delete" onClick={() => setDeleteOpen(true)}>

@@ -120,10 +120,6 @@ export default function FormUser(p: ModalUserProps) {
   };
 
   const handleAction = () => {
-    console.log(
-      "validate Form" +
-        validateForm(s.firstNameText, s.lastNameText, s.imageUrl)
-    );
     actions.setRequireFirstName(s.firstNameText);
     actions.setRequireLastName(s.lastNameText);
     actions.setRequireImageUrl(s.imageUrl);
@@ -285,7 +281,9 @@ export default function FormUser(p: ModalUserProps) {
               }}
             >
               <Button
-                onClick={handleAction}
+                onClick={() => {
+                  p.showModal(false);
+                }}
                 disabled={p.isLoading}
                 variant="contained"
                 style={{ marginRight: 7 }}
