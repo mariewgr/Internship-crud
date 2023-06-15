@@ -83,8 +83,8 @@ export default function GrideUser(p: GrideUserProps) {
                   <Container
                     style={{
                       position: "absolute",
-                      top: 390,
-                      left: 750,
+                      top: 470,
+                      left: 730,
                       justifyContent: "flex-start",
                       justifyItems: "flex-start",
                     }}

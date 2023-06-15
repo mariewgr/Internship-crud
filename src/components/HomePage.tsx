@@ -17,8 +17,8 @@ import {
   styled,
 } from "@material-ui/core";
 import UsersContext, { User } from "../contexts/UsersContext";
-import { ChangeEvent, useContext, useEffect } from "react";
-import { Alert } from "@mui/material";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
+import { Alert, Pagination } from "@mui/material";
 import dayjs from "dayjs";
 import useLocalStore, { StoreConfig } from "state-decorator";
 
@@ -90,6 +90,7 @@ type Actions = {
   setChecked: (checked: boolean) => void;
   setIsANumber: (IsANumber: boolean) => void;
   setUsers: (users: User[]) => void;
+  setPage: (page: number) => void;
 };
 
 export type State = {
@@ -99,6 +100,7 @@ export type State = {
   checked: boolean;
   isANumber: boolean;
   users: User[];
+  page: number;
 };
 
 type DerivedState = {
@@ -113,6 +115,7 @@ export const configHomePage: StoreConfig<State, Actions, any, DerivedState> = {
     checked: false,
     isANumber: true,
     users: [],
+    page: 1,
   }),
 
   actions: {
@@ -122,6 +125,7 @@ export const configHomePage: StoreConfig<State, Actions, any, DerivedState> = {
     setChecked: ({ args: [checked] }) => ({ checked }),
     setIsANumber: ({ args: [isANumber] }) => ({ isANumber }),
     setUsers: ({ args: [users] }) => ({ users }),
+    setPage: ({ args: [page] }) => ({ page }),
   },
   derivedState: {
     filteredUsers: {
@@ -143,6 +147,7 @@ export default function HomePage() {
   } = useContext(UsersContext);
   const { state: s, actions: a } = useLocalStore(configHomePage);
   const ariaLabel = { "aria-label": "description" };
+  const usersPerPage = 10;
 
   useEffect(() => {
     a.setUsers(users);
@@ -150,6 +155,7 @@ export default function HomePage() {
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     a.setSearchTerm(event.target.value.toLowerCase());
+    a.setPage(1);
   };
   const handleYearChoice = (event: ChangeEvent<HTMLInputElement>) => {
     a.setInputYear(event.target.value);
@@ -162,10 +168,16 @@ export default function HomePage() {
     } else {
       a.setIsANumber(false);
     }
+    a.setPage(1);
   };
 
   const handleCheckBox = () => {
     a.setChecked(!s.checked);
+    a.setPage(1);
+  };
+
+  const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
+    a.setPage(value);
   };
 
   return (
@@ -277,7 +289,12 @@ export default function HomePage() {
             }}
             title="Create User"
           ></FormUser>
-          <BasicTable users={s.filteredUsers} />
+          <BasicTable
+            users={s.filteredUsers.slice(
+              usersPerPage * (s.page - 1),
+              usersPerPage * s.page
+            )}
+          />
           <Button
             onClick={() => showCreateModal(true)}
             style={{ color: "#fff", borderRadius: 150 }}
@@ -296,6 +313,15 @@ export default function HomePage() {
             </Fab>
           </Button>
         </Container>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Pagination count={6} page={s.page} onChange={handlePage} />
+        </div>
       </Box>
     </>
   );
