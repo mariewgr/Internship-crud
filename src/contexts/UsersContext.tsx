@@ -37,6 +37,8 @@ type Actions = {
     birthdate: Dayjs | null,
     imageUrl: string
   ) => Promise<User>;
+  setOpenDeleteSuccess: (openDeleteSucces: boolean) => void;
+  setPage: (page: number) => void;
 };
 
 export type UsersListActions = Actions;
@@ -44,6 +46,8 @@ export type UsersListActions = Actions;
 export type State = {
   users: User[];
   openCreate: boolean;
+  openDeleteSucces: boolean;
+  page: number;
 };
 
 export type UsersState = State;
@@ -53,10 +57,14 @@ export const config: StoreConfig<State, Actions> = {
   getInitialState: () => ({
     users: [],
     openCreate: false,
+    openDeleteSucces: false,
+    page: 1,
   }),
 
   actions: {
     setUsers: setArgIn("users"), //({ args: [users] }) => ({ users }),
+    setOpenDeleteSuccess: setArgIn("openDeleteSucces"),
+    setPage: setArgIn("page"),
     loadUsers: {
       getPromise: () =>
         fetch("http://localhost:3050/api/users?limit=100").then((res) =>
@@ -73,7 +81,9 @@ export const config: StoreConfig<State, Actions> = {
         ),
       effects: ({ s, args: [userId] }) => {
         const newUsers = [...s.users];
-        return { users: newUsers.filter((user) => user.id !== userId) };
+        return {
+          users: newUsers.filter((user) => user.id !== userId),
+        };
       },
     },
     showCreateModal: ({ args: [openCreate] }) => ({ openCreate }),
@@ -93,6 +103,7 @@ export const config: StoreConfig<State, Actions> = {
       },
       sideEffects: ({ a }) => {
         a.showCreateModal(false);
+        a.setPage(1);
       },
     },
     updateUser: {

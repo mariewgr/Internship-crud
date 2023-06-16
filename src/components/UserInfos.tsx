@@ -2,15 +2,7 @@ import { useContext } from "react";
 import UsersContext from "../contexts/UsersContext";
 import { Link, useParams } from "react-router-dom";
 import "./UserInfo.css";
-import {
-  AppBar,
-  Box,
-  Button,
-  Fab,
-  Toolbar,
-  useMediaQuery,
-  useTheme,
-} from "@material-ui/core";
+import { AppBar, Box, Button, Fab, Toolbar } from "@material-ui/core";
 import DialogDelete from "./DialogDelete";
 import FormUser from "./FormUser";
 import EditIcon from "@mui/icons-material/Edit";
@@ -56,7 +48,7 @@ export const configUserInfo: StoreConfig<State, Actions> = {
 };
 export default function UserInfo() {
   const { userId } = useParams();
-  const { users, updateUser, loadingMap, errorMap, deleteUser } =
+  const { users, updateUser, loadingMap, errorMap, setOpenDeleteSuccess } =
     useContext(UsersContext);
 
   const { state: s, actions: a } = useLocalStore(configUserInfo);
@@ -76,7 +68,7 @@ export default function UserInfo() {
       </AppBar>
       <Toolbar id="back-to-top-anchor" />
       {errorMap.deleteUser && (
-        <Alert severity="error">This is an error alert — check it out!</Alert>
+        <Alert severity="error">Could not delete User</Alert>
       )}
       <GrideUser
         user={user}
@@ -90,9 +82,10 @@ export default function UserInfo() {
         style={{ borderRadius: 150 }}
       >
         <Fab
+          className="delete"
           color="secondary"
           aria-label="delete"
-          style={{ position: "fixed", top: 75, right: 86 }}
+          style={{ position: "fixed", top: 77, right: 150 }}
         >
           <DeleteIcon />
         </Fab>
@@ -101,7 +94,7 @@ export default function UserInfo() {
         open={s.openDelete}
         setOpen={a.setOpenDelete}
         id={userId}
-        action={deleteUser}
+        setOpenSucces={setOpenDeleteSuccess}
       />
       <Button
         onClick={() => a.setOpenUpdate(true)}
@@ -116,8 +109,8 @@ export default function UserInfo() {
             position: "fixed",
             top: 75,
             right: 16,
-            background: "orange",
             color: "white",
+            background: "orange",
           }}
         >
           <EditIcon />
@@ -131,6 +124,7 @@ export default function UserInfo() {
         isError={errorMap.updateUser}
         user={user}
         title="Edit User"
+        messageSuccess="User updated with success"
       />
     </>
   );

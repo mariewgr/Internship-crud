@@ -1,21 +1,26 @@
-import LoadingPage from "./components/LoadingPage";
-import ErrorPage from "./components/ErrorPage";
 import HomePage from "./components/HomePage";
 import UsersContext from "./contexts/UsersContext";
 import { useContext } from "react";
+import { Alert, LinearProgress } from "@mui/material";
 
 function App() {
-  const { loadUsers, loadingMap, errorMap } = useContext(UsersContext);
+  const { loadingMap, errorMap } = useContext(UsersContext);
 
   return (
     <>
-      {errorMap.loadUsers ? (
-        <ErrorPage onRetry={loadUsers} />
-      ) : loadingMap.loadUsers ? (
-        <LoadingPage />
-      ) : (
-        <HomePage />
+      {loadingMap.loadUsers && (
+        <div style={{ justifyContent: "center", justifyItems: "center" }}>
+          {" "}
+          <LinearProgress />
+        </div>
       )}
+      {errorMap.loadUsers && (
+        <div style={{ justifyContent: "center", justifyItems: "center" }}>
+          {" "}
+          <Alert severity="error">Error Loading</Alert>
+        </div>
+      )}
+      <HomePage />
     </>
   );
 }

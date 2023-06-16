@@ -17,8 +17,8 @@ import {
   styled,
 } from "@material-ui/core";
 import UsersContext, { User } from "../contexts/UsersContext";
-import { ChangeEvent, useContext, useEffect, useState } from "react";
-import { Alert, Pagination } from "@mui/material";
+import { ChangeEvent, useContext, useEffect } from "react";
+import { Alert, Pagination, Snackbar } from "@mui/material";
 import dayjs from "dayjs";
 import useLocalStore, { StoreConfig } from "state-decorator";
 
@@ -90,7 +90,6 @@ type Actions = {
   setChecked: (checked: boolean) => void;
   setIsANumber: (IsANumber: boolean) => void;
   setUsers: (users: User[]) => void;
-  setPage: (page: number) => void;
 };
 
 export type State = {
@@ -100,7 +99,6 @@ export type State = {
   checked: boolean;
   isANumber: boolean;
   users: User[];
-  page: number;
 };
 
 type DerivedState = {
@@ -125,7 +123,6 @@ export const configHomePage: StoreConfig<State, Actions, any, DerivedState> = {
     setChecked: ({ args: [checked] }) => ({ checked }),
     setIsANumber: ({ args: [isANumber] }) => ({ isANumber }),
     setUsers: ({ args: [users] }) => ({ users }),
-    setPage: ({ args: [page] }) => ({ page }),
   },
   derivedState: {
     filteredUsers: {
@@ -144,6 +141,10 @@ export default function HomePage() {
     openCreate,
     loadingMap,
     errorMap,
+    setOpenDeleteSuccess,
+    openDeleteSucces,
+    setPage,
+    page,
   } = useContext(UsersContext);
   const { state: s, actions: a } = useLocalStore(configHomePage);
   const ariaLabel = { "aria-label": "description" };
@@ -155,7 +156,7 @@ export default function HomePage() {
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     a.setSearchTerm(event.target.value.toLowerCase());
-    a.setPage(1);
+    setPage(1);
   };
   const handleYearChoice = (event: ChangeEvent<HTMLInputElement>) => {
     a.setInputYear(event.target.value);
@@ -168,16 +169,16 @@ export default function HomePage() {
     } else {
       a.setIsANumber(false);
     }
-    a.setPage(1);
+    setPage(1);
   };
 
   const handleCheckBox = () => {
     a.setChecked(!s.checked);
-    a.setPage(1);
+    setPage(1);
   };
 
   const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
-    a.setPage(value);
+    setPage(value);
   };
 
   return (
@@ -197,7 +198,7 @@ export default function HomePage() {
           </Toolbar>
         </AppBar>
         {errorMap.deleteUser && (
-          <Alert severity="error">This is an error alert — check it out!</Alert>
+          <Alert severity="error">Could not delete User</Alert>
         )}
         <Box
           style={{
@@ -216,6 +217,7 @@ export default function HomePage() {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
+              boxShadow: "3 3 3 3 black",
             }}
           >
             <div
@@ -232,6 +234,7 @@ export default function HomePage() {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
+                  padding: 5,
                 }}
               >
                 <SearchIcon />
@@ -288,25 +291,27 @@ export default function HomePage() {
               imageUrl: "",
             }}
             title="Create User"
+            messageSuccess="User created with success"
           ></FormUser>
           <BasicTable
             users={s.filteredUsers.slice(
-              usersPerPage * (s.page - 1),
-              usersPerPage * s.page
+              usersPerPage * (page - 1),
+              usersPerPage * page
             )}
           />
           <Button
             onClick={() => showCreateModal(true)}
-            style={{ color: "#fff", borderRadius: 150 }}
+            style={{ borderRadius: 150, backgroundColor: "ButtonShadow" }}
           >
             <Fab
+              className="add"
               aria-label="add"
               style={{
                 position: "fixed",
                 bottom: 16,
                 right: 16,
-                background: "orange",
                 color: "white",
+                background: "orange",
               }}
             >
               <AddIcon />
@@ -320,9 +325,23 @@ export default function HomePage() {
             alignItems: "center",
           }}
         >
-          <Pagination count={6} page={s.page} onChange={handlePage} />
+          <Pagination count={6} page={page} onChange={handlePage} />
         </div>
       </Box>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={openDeleteSucces}
+        autoHideDuration={3000}
+        onClose={() => setOpenDeleteSuccess(false)}
+      >
+        <Alert
+          onClose={() => setOpenDeleteSuccess(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          User Deleted with success
+        </Alert>
+      </Snackbar>
     </>
   );
 }

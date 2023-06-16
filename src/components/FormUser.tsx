@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Dialog,
   DialogActions,
@@ -8,9 +7,9 @@ import {
   useMediaQuery,
   useTheme,
 } from "@material-ui/core";
-import { ChangeEvent, useEffect } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useLocalStore, StoreConfig } from "state-decorator";
-import { Alert, Stack } from "@mui/material";
+import { Alert, Container, Snackbar, Stack } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -93,6 +92,7 @@ type ModalUserProps = {
   open: boolean;
   user: User;
   title: string;
+  messageSuccess: string;
 };
 
 export default function FormUser(p: ModalUserProps) {
@@ -102,6 +102,8 @@ export default function FormUser(p: ModalUserProps) {
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+
+  const [openSuccess, setOpenSucces] = useState(false);
 
   const handleFirstNameTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     actions.firstNameOnTextChange(event.target.value);
@@ -138,6 +140,7 @@ export default function FormUser(p: ModalUserProps) {
         actions.imageUrlOnTextChange(s.imageUrl);
       } else {
         p.showModal(false);
+        setOpenSucces(true);
       }
     }
   };
@@ -166,11 +169,14 @@ export default function FormUser(p: ModalUserProps) {
             textAlign: "center",
             verticalAlign: "text-bottom",
             paddingTop: 0,
+            paddingBottom: 0,
           }}
         >
           <p style={{ fontSize: 30 }}>{p.title}</p>
         </DialogTitle>
-        <DialogActions style={{ minWidth: 300, justifyContent: "center" }}>
+        <DialogActions
+          style={{ minWidth: 320, minHeight: 300, justifyContent: "center" }}
+        >
           <Stack
             component="form"
             sx={{
@@ -192,6 +198,7 @@ export default function FormUser(p: ModalUserProps) {
             >
               {s.requireFirstName ? (
                 <TextField
+                  style={{ minWidth: 250 }}
                   label="FirstName*"
                   placeholder="FirstName*"
                   inputProps={ariaLabel}
@@ -203,6 +210,7 @@ export default function FormUser(p: ModalUserProps) {
                 <TextField
                   required
                   error
+                  style={{ minWidth: 250 }}
                   label="FirstName*"
                   placeholder="FirstName*"
                   inputProps={ariaLabel}
@@ -214,6 +222,7 @@ export default function FormUser(p: ModalUserProps) {
               )}
               {s.requireLastName ? (
                 <TextField
+                  style={{ minWidth: 250 }}
                   label="LastName*"
                   placeholder="LastName*"
                   inputProps={ariaLabel}
@@ -225,6 +234,7 @@ export default function FormUser(p: ModalUserProps) {
                 <TextField
                   error
                   required
+                  style={{ minWidth: 250 }}
                   label="LastName*"
                   placeholder="LastName*"
                   inputProps={ariaLabel}
@@ -237,6 +247,7 @@ export default function FormUser(p: ModalUserProps) {
               {p.user.birthdate === null ? (
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
+                    sx={{ minWidth: 250 }}
                     label="Birthdate"
                     onChange={handleBirthdateTextChange}
                   />
@@ -244,6 +255,7 @@ export default function FormUser(p: ModalUserProps) {
               ) : (
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
+                    sx={{ minWidth: 250 }}
                     label="Birthdate"
                     onChange={handleBirthdateTextChange}
                     defaultValue={dayjs(p.user.birthdate) as undefined}
@@ -252,6 +264,7 @@ export default function FormUser(p: ModalUserProps) {
               )}
               {s.requireImageUrl ? (
                 <TextField
+                  style={{ minWidth: 250 }}
                   label="Image URL*"
                   placeholder="Image URL*"
                   inputProps={ariaLabel}
@@ -262,6 +275,7 @@ export default function FormUser(p: ModalUserProps) {
               ) : (
                 <TextField
                   error
+                  style={{ minWidth: 250 }}
                   label="Image URL*"
                   placeholder="Image URL*"
                   inputProps={ariaLabel}
@@ -272,36 +286,52 @@ export default function FormUser(p: ModalUserProps) {
                 />
               )}
             </Stack>
-            <Box
-              style={{
-                display: "flex",
-                alignContent: "center",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Button
-                onClick={() => {
-                  p.showModal(false);
-                }}
-                disabled={p.isLoading}
-                variant="contained"
-                style={{ marginRight: 7 }}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleAction}
-                disabled={p.isLoading}
-                variant="contained"
-                style={{ background: "orange", color: "white" }}
-              >
-                Submit
-              </Button>
-            </Box>
           </Stack>
         </DialogActions>
+        <Container
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            padding: 5,
+          }}
+        >
+          <Button
+            onClick={() => {
+              p.showModal(false);
+            }}
+            disabled={p.isLoading}
+            variant="outlined"
+          >
+            Cancel
+          </Button>
+          <Button
+            className="submit"
+            onClick={handleAction}
+            disabled={p.isLoading}
+            variant="contained"
+            style={{
+              color: "white",
+              background: "orange",
+            }}
+          >
+            Submit
+          </Button>
+        </Container>
       </Dialog>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={openSuccess}
+        autoHideDuration={3000}
+        onClose={() => setOpenSucces(false)}
+      >
+        <Alert
+          onClose={() => setOpenSucces(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {p.messageSuccess}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

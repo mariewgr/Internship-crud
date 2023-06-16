@@ -1,6 +1,5 @@
 import {
   Grid,
-  Container,
   Button,
   Fab,
   Dialog,
@@ -11,7 +10,7 @@ import {
   useTheme,
   useMediaQuery,
 } from "@material-ui/core";
-import { Alert, Stack } from "@mui/material";
+import { Alert, Snackbar, Stack } from "@mui/material";
 import dayjs from "dayjs";
 import ImageIcon from "@mui/icons-material/Image";
 import UsersContext, { User } from "../contexts/UsersContext";
@@ -31,6 +30,7 @@ export default function GrideUser(p: GrideUserProps) {
 
   const [imageInput, setImageInput] = useState(user.imageUrl);
   const [wrongInput, setWrongInput] = useState(false);
+  const [openSuccess, setOpenSucces] = useState(false);
 
   const handleImageChange = () => {
     if (
@@ -46,7 +46,11 @@ export default function GrideUser(p: GrideUserProps) {
         imageInput
       );
       setWrongInput(false);
-      setOpenImage(false);
+
+      if (!errorMap.updateUser) {
+        setOpenSucces(true);
+        setOpenImage(false);
+      }
     } else {
       setWrongInput(true);
     }
@@ -75,38 +79,38 @@ export default function GrideUser(p: GrideUserProps) {
               }}
             >
               <Grid item xs={12}>
-                <dd>
+                <dd
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginLeft: 0,
+                  }}
+                >
                   <img
                     src={user.imageUrl}
-                    style={{ borderRadius: 200, margin: 15 }}
+                    style={{ borderRadius: 200, padding: 10 }}
                   ></img>
-                  <Container
+                  <Button
+                    onClick={() => setOpenImage(true)}
                     style={{
-                      position: "absolute",
-                      top: 470,
-                      left: 730,
-                      justifyContent: "flex-start",
-                      justifyItems: "flex-start",
+                      color: "#fff",
+                      borderRadius: 150,
+                      position: "fixed",
+                      top: 70,
+                      right: 75,
                     }}
                   >
-                    <Button
-                      onClick={() => setOpenImage(true)}
+                    <Fab
+                      className="edit"
+                      aria-label="image"
                       style={{
-                        color: "#fff",
-                        borderRadius: 150,
+                        color: "white",
+                        background: "orange",
                       }}
                     >
-                      <Fab
-                        aria-label="image"
-                        style={{
-                          background: "orange",
-                          color: "white",
-                        }}
-                      >
-                        <ImageIcon />
-                      </Fab>
-                    </Button>
-                  </Container>
+                      <ImageIcon />
+                    </Fab>
+                  </Button>
                   <Dialog
                     fullScreen={fullScreen}
                     open={openImage}
@@ -114,9 +118,7 @@ export default function GrideUser(p: GrideUserProps) {
                     aria-labelledby="responsive-dialog-title"
                   >
                     {errorMap.updateUser && (
-                      <Alert severity="error">
-                        This is an error alert — check it out!
-                      </Alert>
+                      <Alert severity="error">Could not update Image</Alert>
                     )}
                     <DialogTitle
                       id="responsive-dialog-title"
@@ -227,6 +229,20 @@ export default function GrideUser(p: GrideUserProps) {
           </div>
         </Grid>
       </dl>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={openSuccess}
+        autoHideDuration={3000}
+        onClose={() => setOpenSucces(false)}
+      >
+        <Alert
+          onClose={() => setOpenSucces(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          User Image Update
+        </Alert>
+      </Snackbar>
     </>
   );
 }
