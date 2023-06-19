@@ -4,8 +4,6 @@ import {
   DialogActions,
   DialogTitle,
   TextField,
-  useMediaQuery,
-  useTheme,
 } from "@material-ui/core";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useLocalStore, StoreConfig } from "state-decorator";
@@ -100,9 +98,6 @@ export default function FormUser(p: ModalUserProps) {
 
   const ariaLabel = { "aria-label": "description" };
 
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-
   const [openSuccess, setOpenSucces] = useState(false);
 
   const handleFirstNameTextChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -155,7 +150,6 @@ export default function FormUser(p: ModalUserProps) {
   return (
     <div>
       <Dialog
-        fullScreen={fullScreen}
         open={p.open}
         onClose={() => p.showModal(false)}
         aria-labelledby="responsive-dialog-title"
@@ -305,13 +299,13 @@ export default function FormUser(p: ModalUserProps) {
             Cancel
           </Button>
           <Button
+            color="secondary"
             className="submit"
             onClick={handleAction}
             disabled={p.isLoading}
             variant="contained"
             style={{
               color: "white",
-              background: "orange",
             }}
           >
             Submit

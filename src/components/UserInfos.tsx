@@ -7,10 +7,12 @@ import DialogDelete from "./DialogDelete";
 import FormUser from "./FormUser";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Alert } from "@mui/material";
 import useLocalStore, { StoreConfig } from "state-decorator";
 import { setArgIn } from "state-decorator/helpers";
 import GrideUser from "./GridUser";
+import ImageUpdate from "./ImageUpdate";
 
 type Actions = {
   setOpenDelete: (openDelete: boolean) => void;
@@ -61,7 +63,7 @@ export default function UserInfo() {
         <Toolbar>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             <Link to={"/"} style={{ color: "#fff" }}>
-              Home
+              <ArrowBackIcon />
             </Link>
           </Box>
         </Toolbar>
@@ -73,22 +75,23 @@ export default function UserInfo() {
       <GrideUser
         user={user}
         setNewImage={a.setNewImage}
-        setOpenImage={a.setOpenImage}
         newImage={s.newImage}
-        openImage={s.openImage}
       />
       <Button
         onClick={() => a.setOpenDelete(true)}
-        style={{ borderRadius: 150 }}
+        style={{
+          borderRadius: 150,
+          width: 55,
+          height: 55,
+          position: "fixed",
+          top: 77,
+          right: 150,
+          color: "orange",
+        }}
+        color="secondary"
+        variant="outlined"
       >
-        <Fab
-          className="delete"
-          color="secondary"
-          aria-label="delete"
-          style={{ position: "fixed", top: 77, right: 150 }}
-        >
-          <DeleteIcon />
-        </Fab>
+        <DeleteIcon />
       </Button>
       <DialogDelete
         open={s.openDelete}
@@ -103,6 +106,7 @@ export default function UserInfo() {
         }}
       >
         <Fab
+          color="secondary"
           className="fabEdit"
           aria-label="edit"
           style={{
@@ -110,7 +114,6 @@ export default function UserInfo() {
             top: 75,
             right: 16,
             color: "white",
-            background: "orange",
           }}
         >
           <EditIcon />
@@ -125,6 +128,11 @@ export default function UserInfo() {
         user={user}
         title="Edit User"
         messageSuccess="User updated with success"
+      />
+      <ImageUpdate
+        openImage={s.openImage}
+        setOpenImage={a.setOpenImage}
+        user={user}
       />
     </>
   );

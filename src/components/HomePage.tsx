@@ -192,6 +192,7 @@ export default function HomePage() {
               justifyContent: "center",
               alignItems: "center",
               fontSize: 30,
+              color: "white",
             }}
           >
             <Box style={{ paddingRight: 3 }}>Users List</Box>
@@ -217,7 +218,6 @@ export default function HomePage() {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              boxShadow: "3 3 3 3 black",
             }}
           >
             <div
@@ -301,17 +301,19 @@ export default function HomePage() {
           />
           <Button
             onClick={() => showCreateModal(true)}
-            style={{ borderRadius: 150, backgroundColor: "ButtonShadow" }}
+            style={{
+              borderRadius: 150,
+              position: "fixed",
+              bottom: 16,
+              right: 16,
+            }}
           >
             <Fab
+              color="secondary"
               className="add"
               aria-label="add"
               style={{
-                position: "fixed",
-                bottom: 16,
-                right: 16,
                 color: "white",
-                background: "orange",
               }}
             >
               <AddIcon />

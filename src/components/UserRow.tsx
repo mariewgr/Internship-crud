@@ -8,6 +8,7 @@ import FormUser from "./FormUser";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import dayjs from "dayjs";
+import "./UserRow.css";
 
 type UserRowProps = {
   user: User;
