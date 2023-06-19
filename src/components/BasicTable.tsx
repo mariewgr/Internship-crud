@@ -7,13 +7,15 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { User } from "../contexts/UsersContext";
 import UserRow from "./UserRow";
+import { useTranslation } from "react-i18next";
 
 type BasicTableProps = {
   users: User[];
 };
 
 export default function BasicTable(p: BasicTableProps) {
-  const rows = ["Name", "Birthdate", "Actions"];
+  const { t } = useTranslation();
+  const rows = [t("name"), t("birthdate"), t("actions")];
 
   return (
     <TableContainer component={Paper}>

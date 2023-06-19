@@ -1,12 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
+import App from "./components/App.tsx";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import UserInfo from "./components/UserInfos.tsx";
 import { UsersContextProvider } from "./contexts/UsersContext.tsx";
 import { createTheme, ThemeProvider } from "@material-ui/core";
 import { blue, red } from "@material-ui/core/colors";
+import "./translate/translate.tsx";
 
 const router = createBrowserRouter([
   {

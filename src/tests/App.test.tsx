@@ -1,7 +1,7 @@
 import { createMockStore } from "state-decorator/test";
-import { User, config } from "./contexts/UsersContext";
-import { filteredUsers } from "./components/HomePage";
-import { configHomePage } from "./components/HomePage";
+import { User, config } from "../contexts/UsersContext";
+import { filteredUsers } from "../components/HomePage";
+import { configHomePage } from "../components/HomePage";
 import dayjs from "dayjs";
 
 describe("UsersContext", () => {

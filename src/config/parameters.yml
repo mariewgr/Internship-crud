@@ -1,0 +1,4 @@
+# app/config/parameters.yml
+
+parameters:
+    locale: en

@@ -12,6 +12,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { User } from "../contexts/UsersContext";
+import { useTranslation } from "react-i18next";
 
 export type Actions = {
   firstNameOnTextChange: (firstNameText: string) => void;
@@ -99,6 +100,8 @@ export default function FormUser(p: ModalUserProps) {
   const ariaLabel = { "aria-label": "description" };
 
   const [openSuccess, setOpenSucces] = useState(false);
+
+  const { t } = useTranslation();
 
   const handleFirstNameTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     actions.firstNameOnTextChange(event.target.value);
@@ -193,8 +196,8 @@ export default function FormUser(p: ModalUserProps) {
               {s.requireFirstName ? (
                 <TextField
                   style={{ minWidth: 250 }}
-                  label="FirstName*"
-                  placeholder="FirstName*"
+                  label={t("firstname")}
+                  placeholder={t("firstname")}
                   inputProps={ariaLabel}
                   onChange={handleFirstNameTextChange}
                   variant="outlined"
@@ -205,8 +208,8 @@ export default function FormUser(p: ModalUserProps) {
                   required
                   error
                   style={{ minWidth: 250 }}
-                  label="FirstName*"
-                  placeholder="FirstName*"
+                  label={t("firstname")}
+                  placeholder={t("firstname")}
                   inputProps={ariaLabel}
                   onChange={handleFirstNameTextChange}
                   variant="outlined"
@@ -217,8 +220,8 @@ export default function FormUser(p: ModalUserProps) {
               {s.requireLastName ? (
                 <TextField
                   style={{ minWidth: 250 }}
-                  label="LastName*"
-                  placeholder="LastName*"
+                  label={t("lastname")}
+                  placeholder={t("lastname")}
                   inputProps={ariaLabel}
                   onChange={handleLastNameTextChange}
                   variant="outlined"
@@ -229,8 +232,8 @@ export default function FormUser(p: ModalUserProps) {
                   error
                   required
                   style={{ minWidth: 250 }}
-                  label="LastName*"
-                  placeholder="LastName*"
+                  label={t("lastname")}
+                  placeholder={t("lastname")}
                   inputProps={ariaLabel}
                   onChange={handleLastNameTextChange}
                   variant="outlined"
@@ -242,7 +245,7 @@ export default function FormUser(p: ModalUserProps) {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     sx={{ minWidth: 250 }}
-                    label="Birthdate"
+                    label={t("birthdate")}
                     onChange={handleBirthdateTextChange}
                   />
                 </LocalizationProvider>
@@ -250,7 +253,7 @@ export default function FormUser(p: ModalUserProps) {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     sx={{ minWidth: 250 }}
-                    label="Birthdate"
+                    label={t("birthdate")}
                     onChange={handleBirthdateTextChange}
                     defaultValue={dayjs(p.user.birthdate) as undefined}
                   />
@@ -259,8 +262,8 @@ export default function FormUser(p: ModalUserProps) {
               {s.requireImageUrl ? (
                 <TextField
                   style={{ minWidth: 250 }}
-                  label="Image URL*"
-                  placeholder="Image URL*"
+                  label={t("imageUrl")}
+                  placeholder={t("imageUrl")}
                   inputProps={ariaLabel}
                   onChange={handleImageUrlTextChange}
                   variant="outlined"
@@ -270,12 +273,12 @@ export default function FormUser(p: ModalUserProps) {
                 <TextField
                   error
                   style={{ minWidth: 250 }}
-                  label="Image URL*"
-                  placeholder="Image URL*"
+                  label={t("imageUrl")}
+                  placeholder={t("imageUrl")}
                   inputProps={ariaLabel}
                   onChange={handleImageUrlTextChange}
                   variant="outlined"
-                  helperText="Must be a link"
+                  helperText={t("notALink")}
                   defaultValue={p.user.imageUrl}
                 />
               )}
@@ -296,7 +299,7 @@ export default function FormUser(p: ModalUserProps) {
             disabled={p.isLoading}
             variant="outlined"
           >
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             color="secondary"
@@ -308,7 +311,7 @@ export default function FormUser(p: ModalUserProps) {
               color: "white",
             }}
           >
-            Submit
+            {t("submit")}
           </Button>
         </Container>
       </Dialog>

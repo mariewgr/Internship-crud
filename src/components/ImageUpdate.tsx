@@ -12,6 +12,7 @@ import { Alert, Stack } from "@mui/material";
 import { ChangeEvent, useContext, useState } from "react";
 import UsersContext, { User } from "../contexts/UsersContext";
 import ImageIcon from "@mui/icons-material/Image";
+import { useTranslation } from "react-i18next";
 
 type ImageUpdateProps = {
   openImage: boolean;
@@ -25,6 +26,8 @@ export default function ImageUpdate(p: ImageUpdateProps) {
   const [imageInput, setImageInput] = useState(p.user.imageUrl);
   const [wrongInput, setWrongInput] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
+
+  const { t } = useTranslation();
 
   const handleImageChange = () => {
     if (
@@ -82,7 +85,7 @@ export default function ImageUpdate(p: ImageUpdateProps) {
         aria-labelledby="responsive-dialog-title"
       >
         {errorMap.updateUser && (
-          <Alert severity="error">Could not update Image</Alert>
+          <Alert severity="error"> {t("noUpdateImage")}</Alert>
         )}
 
         <DialogTitle
@@ -93,23 +96,23 @@ export default function ImageUpdate(p: ImageUpdateProps) {
             paddingTop: 0,
           }}
         >
-          <p style={{ fontSize: 30 }}>Update Image</p>
+          <p style={{ fontSize: 30 }}>{t("updateImage")}</p>
         </DialogTitle>
         <DialogActions style={{ minWidth: 300, justifyContent: "center" }}>
           <Stack spacing={3}>
             {wrongInput ? (
               <TextField
                 error
-                label="Image URL*"
-                placeholder="Image URL*"
+                label={t("imageUrl")}
+                placeholder={t("imageUrl")}
                 onChange={handleImageInputChange}
                 variant="outlined"
                 defaultValue={p.user.imageUrl}
               />
             ) : (
               <TextField
-                label="Image URL*"
-                placeholder="Image URL*"
+                label={t("imageUrl")}
+                placeholder={t("imageUrl")}
                 onChange={handleImageInputChange}
                 variant="outlined"
                 defaultValue={p.user.imageUrl}
@@ -129,7 +132,7 @@ export default function ImageUpdate(p: ImageUpdateProps) {
                 variant="contained"
                 style={{ marginRight: 7 }}
               >
-                Cancel
+                {t("cancel")}
               </Button>
               <Button
                 color="secondary"
@@ -138,7 +141,7 @@ export default function ImageUpdate(p: ImageUpdateProps) {
                 variant="contained"
                 style={{ color: "white" }}
               >
-                Submit
+                {t("submit")}
               </Button>
             </Box>
           </Stack>
@@ -155,7 +158,7 @@ export default function ImageUpdate(p: ImageUpdateProps) {
           severity="success"
           sx={{ width: "100%" }}
         >
-          User Image Update
+          {t("updateImageSuccess")}
         </Alert>
       </Snackbar>
     </>

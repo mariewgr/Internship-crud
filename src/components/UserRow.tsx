@@ -9,6 +9,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import dayjs from "dayjs";
 import "./UserRow.css";
+import { useTranslation } from "react-i18next";
 
 type UserRowProps = {
   user: User;
@@ -31,6 +32,8 @@ export default function UserRow(p: UserRowProps) {
   const [openDelete, setDeleteOpen] = useState(false);
   const [openUpdate, setUpdateOpen] = useState(false);
 
+  const { t } = useTranslation();
+
   return (
     <UserContext.Provider value={user}>
       <TableRow key={user.id}>
@@ -41,9 +44,9 @@ export default function UserRow(p: UserRowProps) {
         </TableCell>
         <TableCell align="center">
           {user.birthdate !== null ? (
-            <div>{dayjs(user.birthdate).format("DD-MMMM-YYYY")}</div>
+            <div>{dayjs(user.birthdate).format("DD/MM/YYYY")}</div>
           ) : (
-            <div>No Birthdate registered</div>
+            <div> {t("noBirthdate")}</div>
           )}
         </TableCell>
         <TableCell align="center">
@@ -68,8 +71,8 @@ export default function UserRow(p: UserRowProps) {
               isLoading={loadingMap.updateUser}
               isError={errorMap.updateUser}
               user={user}
-              title="Edit User"
-              messageSuccess="User updated with success"
+              title={t("edit")}
+              messageSuccess={t("updateSuccess")}
             />
           </>
         </TableCell>

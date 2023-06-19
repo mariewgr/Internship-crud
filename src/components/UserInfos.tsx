@@ -13,6 +13,7 @@ import useLocalStore, { StoreConfig } from "state-decorator";
 import { setArgIn } from "state-decorator/helpers";
 import GrideUser from "./GridUser";
 import ImageUpdate from "./ImageUpdate";
+import { useTranslation } from "react-i18next";
 
 type Actions = {
   setOpenDelete: (openDelete: boolean) => void;
@@ -57,6 +58,8 @@ export default function UserInfo() {
 
   const user = users.find((user) => user.id === userId);
 
+  const { t } = useTranslation();
+
   return (
     <>
       <AppBar component="nav">
@@ -75,9 +78,7 @@ export default function UserInfo() {
         </Toolbar>
       </AppBar>
       <Toolbar id="back-to-top-anchor" />
-      {errorMap.deleteUser && (
-        <Alert severity="error">Could not delete User</Alert>
-      )}
+      {errorMap.deleteUser && <Alert severity="error">{t("noDelete")}</Alert>}
       <GrideUser
         user={user}
         setNewImage={a.setNewImage}
@@ -132,8 +133,8 @@ export default function UserInfo() {
         isLoading={loadingMap.updateUser}
         isError={errorMap.updateUser}
         user={user}
-        title="Edit User"
-        messageSuccess="User updated with success"
+        title={t("edit")}
+        messageSuccess={t("updateSuccess")}
       />
       <ImageUpdate
         openImage={s.openImage}

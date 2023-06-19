@@ -1,0 +1,35 @@
+ 
+ {  
+    "delete" : "Supprimer",
+    "submit" : "Soumettre",
+    "cancel" : "Annuler",
+    "createTitle" : "Créer un utilisateur",
+    "createSuccess" : "L'utilisateur a été crée avec succès",
+    "errorLoading" : "Erreur de chargement des utilisateurs",
+    "name" : "Nom",
+    "birthdate" : "Date de naissance",
+    "actions" : "Actions",
+    "deleteUser" : "Supprimer l'utilisateur",
+    "deleteUserConfirmation" : "Êtes-vous sur de vouloir supprimer cet utilisateur?" ,
+    "deleteUserSuccess" : "L'utilisateur a été supprimer avec succès" ,
+    "firstname" : "Prénom" ,
+    "lastname" : "Nom" ,
+    "imageUrl" : "Lien Image" ,
+    "notALink" : "N'est pas un lien" ,
+    "id" : "Identifiant" ,
+    "noBirthdate" : "Pas de date d'Anniversaire enregistrée" ,
+    "usersList" : "Liste des utilisateurs" ,
+    "noDelete" : "Impossible de supprimer l'utilisateur" ,
+    "search" : "Rechercher..." ,
+    "birthdareKnown" : "Date de naissance enregistrée" ,
+    "filters" : "Filtres:" ,
+    "year" : "Année de naissance" ,
+    "noNumber" : "N'est pas un nombre" ,
+    "noUpdateImage" : "Impossible de mettre l'image à jour" ,
+    "updateImage" : "Mettre l'image à jour" ,
+    "updateImageSuccess" : "L'image a été mise à jour avec succès" ,
+    "edit" : "Mettre l'utilisateur à jour" ,
+    "updateSuccess" : "L'utilisateur a été mis à jour avec succès"
+}    
+    
+ 

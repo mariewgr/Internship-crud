@@ -2,8 +2,6 @@ import {
   Dialog,
   DialogTitle,
   DialogActions,
-  useMediaQuery,
-  useTheme,
   DialogContent,
   Snackbar,
 } from "@material-ui/core";
@@ -12,6 +10,7 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import UsersContext from "../contexts/UsersContext";
 import { Alert, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 type DialogDeleteProps = {
   open: boolean;
@@ -29,6 +28,8 @@ export default function DialogDelete(p: DialogDeleteProps) {
     openDeleteSucces,
   } = useContext(UsersContext);
 
+  const { t } = useTranslation();
+
   return (
     <>
       <Dialog
@@ -45,10 +46,10 @@ export default function DialogDelete(p: DialogDeleteProps) {
             fontStyle: "Helvetica",
           }}
         >
-          Delete User
+          {t("deleteUser")}
         </DialogTitle>
         <DialogContent style={{ fontStyle: "Helvetica" }}>
-          <Typography>Are you sure you want to Delete ?</Typography>
+          <Typography> {t("deleteUserConfirmation")}</Typography>{" "}
         </DialogContent>
         <DialogActions style={{ justifyContent: "space-between" }}>
           <Button
@@ -71,7 +72,7 @@ export default function DialogDelete(p: DialogDeleteProps) {
               color="error"
               variant="contained"
             >
-              Delete
+              {t("delete")}
             </Button>
           </Link>
         </DialogActions>
@@ -87,7 +88,7 @@ export default function DialogDelete(p: DialogDeleteProps) {
           severity="success"
           sx={{ width: "100%" }}
         >
-          User Deleted with success
+          {t("deleteUserSuccess")}
         </Alert>
       </Snackbar>
     </>

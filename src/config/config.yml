@@ -1,0 +1,6 @@
+# app/config/config.yml
+
+framework:
+    translator:      { fallback: local}
+
+    default_locale: locale

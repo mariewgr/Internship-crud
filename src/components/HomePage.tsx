@@ -18,9 +18,11 @@ import {
 } from "@material-ui/core";
 import UsersContext, { User } from "../contexts/UsersContext";
 import { ChangeEvent, useContext, useEffect } from "react";
-import { Alert, Pagination, Snackbar } from "@mui/material";
+import { Alert, Pagination } from "@mui/material";
 import dayjs from "dayjs";
 import useLocalStore, { StoreConfig } from "state-decorator";
+import { useTranslation } from "react-i18next";
+import Langue from "./Language";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -147,6 +149,7 @@ export default function HomePage() {
   const { state: s, actions: a } = useLocalStore(configHomePage);
   const ariaLabel = { "aria-label": "description" };
   const usersPerPage = 10;
+  const { t } = useTranslation();
 
   useEffect(() => {
     a.setUsers(users);
@@ -186,19 +189,24 @@ export default function HomePage() {
           <Toolbar
             id="back-to-top-anchor"
             style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
               fontSize: 30,
               color: "white",
+              justifyContent: "center",
             }}
           >
-            <Box style={{ paddingRight: 3 }}>Users List</Box>
+            <Box
+              style={{
+                paddingRight: 3,
+              }}
+            >
+              {t("usersList")}
+            </Box>
+            <Box style={{ position: "fixed", right: 5 }}>
+              <Langue />
+            </Box>
           </Toolbar>
         </AppBar>
-        {errorMap.deleteUser && (
-          <Alert severity="error">Could not delete User</Alert>
-        )}
+        {errorMap.deleteUser && <Alert severity="error">{t("noDelete")}</Alert>}
         <Box
           style={{
             display: "flex",
@@ -237,15 +245,15 @@ export default function HomePage() {
               >
                 <SearchIcon />
                 <StyledInputBase
-                  placeholder="  Search…"
+                  placeholder={t("search")}
                   inputProps={{ "aria-label": "search" }}
                   onChange={handleSearch}
                 />
               </Search>
-              <p style={{ paddingRight: 40 }}>Filters:</p>
+              <p style={{ paddingRight: 40 }}>{t("filters")}</p>
               <FormControlLabel
                 control={<Checkbox />}
-                label="Birthdate known"
+                label={t("birthdareKnown")}
                 color="secondary"
                 onClick={handleCheckBox}
               />
@@ -256,19 +264,19 @@ export default function HomePage() {
                   inputProps={ariaLabel}
                   onChange={handleYearChoice}
                   variant="outlined"
-                  label="Year of Birth"
+                  label={t("year")}
                   style={{ margin: 10 }}
                 />
               ) : (
                 <TextField
                   error
                   value={s.inputYear}
-                  label="Year of Birth"
+                  label={t("year")}
                   placeholder="ex: 1990"
                   inputProps={ariaLabel}
                   onChange={handleYearChoice}
                   variant="outlined"
-                  helperText="Must be a number"
+                  helperText={t("noNumber")}
                 />
               )}
             </div>
@@ -288,8 +296,8 @@ export default function HomePage() {
               birthdate: null,
               imageUrl: "",
             }}
-            title="Create User"
-            messageSuccess="User created with success"
+            title={t("createTitle")}
+            messageSuccess={t("createSuccess")}
           />
           <BasicTable
             users={s.filteredUsers.slice(
