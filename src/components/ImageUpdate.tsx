@@ -93,7 +93,7 @@ export default function ImageUpdate(p: ImageUpdateProps) {
           style={{
             textAlign: "center",
             verticalAlign: "text-bottom",
-            paddingTop: 0,
+            padding: 0,
           }}
         >
           <p style={{ fontSize: 30 }}>{t("updateImage")}</p>
@@ -118,34 +118,33 @@ export default function ImageUpdate(p: ImageUpdateProps) {
                 defaultValue={p.user.imageUrl}
               />
             )}
-            <Box
-              style={{
-                display: "flex",
-                alignContent: "center",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Button
-                onClick={() => p.setOpenImage(false)}
-                disabled={loadingMap.updateUser}
-                variant="contained"
-                style={{ marginRight: 7 }}
-              >
-                {t("cancel")}
-              </Button>
-              <Button
-                color="secondary"
-                onClick={handleImageChange}
-                disabled={loadingMap.updateUser}
-                variant="contained"
-                style={{ color: "white" }}
-              >
-                {t("submit")}
-              </Button>
-            </Box>
           </Stack>
         </DialogActions>
+        <Box
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            padding: 5,
+          }}
+        >
+          <Button
+            onClick={() => p.setOpenImage(false)}
+            disabled={loadingMap.updateUser}
+            variant="contained"
+            style={{ marginRight: 7 }}
+          >
+            {t("cancel")}
+          </Button>
+          <Button
+            color="secondary"
+            onClick={handleImageChange}
+            disabled={loadingMap.updateUser}
+            variant="contained"
+            style={{ color: "white" }}
+          >
+            {t("submit")}
+          </Button>
+        </Box>
       </Dialog>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}

@@ -1,15 +1,14 @@
-import { useState } from "react";
+import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { Language } from "../translate/Language";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import dayjs from "dayjs";
-// require("dayjs/locale/fr");
-// require("dayjs/locale/en");
+import UsersContext from "../contexts/UsersContext";
 
 const Langue = () => {
   const { i18n } = useTranslation();
-  const [lang, setLang] = useState<Language>(Language.FR);
+  const { lang, setLang } = useContext(UsersContext);
 
   let changeLanguage = (event: SelectChangeEvent<HTMLSelectElement>) => {
     let language = event.target.value;

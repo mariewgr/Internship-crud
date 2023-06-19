@@ -7,6 +7,7 @@ import {
 import { createContext, useEffect } from "react";
 import { setArgIn } from "state-decorator/helpers";
 import { Dayjs } from "dayjs";
+import { Language } from "../translate/Language";
 
 export type User = {
   id: string;
@@ -39,6 +40,7 @@ type Actions = {
   ) => Promise<User>;
   setOpenDeleteSuccess: (openDeleteSucces: boolean) => void;
   setPage: (page: number) => void;
+  setLang: (lang: Language) => void;
 };
 
 export type UsersListActions = Actions;
@@ -48,6 +50,7 @@ export type State = {
   openCreate: boolean;
   openDeleteSucces: boolean;
   page: number;
+  lang: Language;
 };
 
 export type UsersState = State;
@@ -59,12 +62,14 @@ export const config: StoreConfig<State, Actions> = {
     openCreate: false,
     openDeleteSucces: false,
     page: 1,
+    lang: Language.FR,
   }),
 
   actions: {
     setUsers: setArgIn("users"), //({ args: [users] }) => ({ users }),
     setOpenDeleteSuccess: setArgIn("openDeleteSucces"),
     setPage: setArgIn("page"),
+    setLang: setArgIn("lang"),
     loadUsers: {
       getPromise: () =>
         fetch("http://localhost:3050/api/users?limit=100").then((res) =>

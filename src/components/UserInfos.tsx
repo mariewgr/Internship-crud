@@ -14,6 +14,7 @@ import { setArgIn } from "state-decorator/helpers";
 import GrideUser from "./GridUser";
 import ImageUpdate from "./ImageUpdate";
 import { useTranslation } from "react-i18next";
+import Langue from "./Langue";
 
 type Actions = {
   setOpenDelete: (openDelete: boolean) => void;
@@ -75,9 +76,11 @@ export default function UserInfo() {
               <ArrowBackIcon />
             </Link>
           </Box>
+          <Box style={{ position: "fixed", right: 5 }}>
+            <Langue />
+          </Box>
         </Toolbar>
       </AppBar>
-      <Toolbar id="back-to-top-anchor" />
       {errorMap.deleteUser && <Alert severity="error">{t("noDelete")}</Alert>}
       <GrideUser
         user={user}

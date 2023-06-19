@@ -22,7 +22,7 @@ import { Alert, Pagination } from "@mui/material";
 import dayjs from "dayjs";
 import useLocalStore, { StoreConfig } from "state-decorator";
 import { useTranslation } from "react-i18next";
-import Langue from "./Language";
+import Langue from "./Langue";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
