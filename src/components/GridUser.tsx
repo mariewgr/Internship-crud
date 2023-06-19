@@ -1,19 +1,6 @@
-import {
-  Grid,
-  Button,
-  Fab,
-  Dialog,
-  DialogTitle,
-  DialogActions,
-  TextField,
-  Box,
-  useTheme,
-  useMediaQuery,
-} from "@material-ui/core";
-import { Alert, Snackbar, Stack } from "@mui/material";
+import { Grid } from "@material-ui/core";
 import dayjs from "dayjs";
-import UsersContext, { User } from "../contexts/UsersContext";
-import { ChangeEvent, useContext, useState } from "react";
+import { User } from "../contexts/UsersContext";
 import { UserInfosActions, UserInfosState } from "./UserInfos";
 
 type GrideUserProps = { user: User } & Pick<UserInfosActions, "setNewImage"> &

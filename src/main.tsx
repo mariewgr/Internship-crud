@@ -6,7 +6,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import UserInfo from "./components/UserInfos.tsx";
 import { UsersContextProvider } from "./contexts/UsersContext.tsx";
 import { createTheme, ThemeProvider } from "@material-ui/core";
-import { blue } from "@material-ui/core/colors";
+import { blue, red } from "@material-ui/core/colors";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +28,10 @@ const theme = createTheme({
     secondary: {
       main: "#ffa500",
       dark: "#FF8C00",
+    },
+    error: {
+      main: red[200],
+      dark: red[500],
     },
   },
 });

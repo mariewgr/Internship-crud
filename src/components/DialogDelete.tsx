@@ -5,12 +5,13 @@ import {
   useMediaQuery,
   useTheme,
   DialogContent,
+  Snackbar,
 } from "@material-ui/core";
 import Button from "@mui/material/Button";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import UsersContext from "../contexts/UsersContext";
-import { Typography } from "@mui/material";
+import { Alert, Typography } from "@mui/material";
 
 type DialogDeleteProps = {
   open: boolean;
@@ -20,14 +21,17 @@ type DialogDeleteProps = {
 };
 export default function DialogDelete(p: DialogDeleteProps) {
   const { open, setOpen } = p;
-  const { loadingMap, errorMap, deleteUser } = useContext(UsersContext);
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const {
+    loadingMap,
+    errorMap,
+    deleteUser,
+    setOpenDeleteSuccess,
+    openDeleteSucces,
+  } = useContext(UsersContext);
 
   return (
     <>
       <Dialog
-        fullScreen={fullScreen}
         open={open}
         onClose={() => setOpen(false)}
         aria-labelledby="responsive-dialog-title"
@@ -72,6 +76,20 @@ export default function DialogDelete(p: DialogDeleteProps) {
           </Link>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={openDeleteSucces}
+        autoHideDuration={3000}
+        onClose={() => setOpenDeleteSuccess(false)}
+      >
+        <Alert
+          onClose={() => setOpenDeleteSuccess(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          User Deleted with success
+        </Alert>
+      </Snackbar>
     </>
   );
 }

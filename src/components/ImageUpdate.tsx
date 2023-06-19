@@ -59,10 +59,7 @@ export default function ImageUpdate(p: ImageUpdateProps) {
       <Button
         onClick={() => p.setOpenImage(true)}
         style={{
-          borderRadius: 100,
-          position: "fixed",
-          top: 70,
-          right: 75,
+          borderRadius: 10,
         }}
       >
         <Fab
@@ -71,6 +68,9 @@ export default function ImageUpdate(p: ImageUpdateProps) {
           aria-label="image"
           style={{
             color: "white",
+            position: "fixed",
+            top: 75,
+            right: 85,
           }}
         >
           <ImageIcon />

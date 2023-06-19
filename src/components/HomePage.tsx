@@ -141,8 +141,6 @@ export default function HomePage() {
     openCreate,
     loadingMap,
     errorMap,
-    setOpenDeleteSuccess,
-    openDeleteSucces,
     setPage,
     page,
   } = useContext(UsersContext);
@@ -292,7 +290,7 @@ export default function HomePage() {
             }}
             title="Create User"
             messageSuccess="User created with success"
-          ></FormUser>
+          />
           <BasicTable
             users={s.filteredUsers.slice(
               usersPerPage * (page - 1),
@@ -303,9 +301,6 @@ export default function HomePage() {
             onClick={() => showCreateModal(true)}
             style={{
               borderRadius: 150,
-              position: "fixed",
-              bottom: 16,
-              right: 16,
             }}
           >
             <Fab
@@ -314,6 +309,9 @@ export default function HomePage() {
               aria-label="add"
               style={{
                 color: "white",
+                position: "fixed",
+                bottom: 16,
+                right: 16,
               }}
             >
               <AddIcon />
@@ -330,20 +328,6 @@ export default function HomePage() {
           <Pagination count={6} page={page} onChange={handlePage} />
         </div>
       </Box>
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={openDeleteSucces}
-        autoHideDuration={3000}
-        onClose={() => setOpenDeleteSuccess(false)}
-      >
-        <Alert
-          onClose={() => setOpenDeleteSuccess(false)}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          User Deleted with success
-        </Alert>
-      </Snackbar>
     </>
   );
 }

@@ -61,7 +61,13 @@ export default function UserInfo() {
     <>
       <AppBar component="nav">
         <Toolbar>
-          <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <Box
+            sx={{
+              display: { xs: "none", sm: "block" },
+              justifyContent: "center",
+              justifyItems: "center",
+            }}
+          >
             <Link to={"/"} style={{ color: "#fff" }}>
               <ArrowBackIcon />
             </Link>
@@ -84,8 +90,8 @@ export default function UserInfo() {
           width: 55,
           height: 55,
           position: "fixed",
-          top: 77,
-          right: 150,
+          top: 75,
+          right: 155,
           color: "orange",
         }}
         color="secondary"
@@ -112,7 +118,7 @@ export default function UserInfo() {
           style={{
             position: "fixed",
             top: 75,
-            right: 16,
+            right: 15,
             color: "white",
           }}
         >
