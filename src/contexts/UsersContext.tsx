@@ -6,7 +6,7 @@ import {
 } from "state-decorator";
 import { createContext, useEffect } from "react";
 import { setArgIn } from "state-decorator/helpers";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { Language } from "../translate/Language";
 
 export type User = {
@@ -22,6 +22,8 @@ export type Response = { total: number; users: User[]; count: number };
 type Actions = {
   setUsers: (users: User[]) => void;
   showCreateModal: (open: boolean) => void;
+  showUpdateModal: (open: boolean) => void;
+  showDeleteModal: (open: boolean) => void;
   loadUsers: () => Promise<Response>;
   deleteUser: (userId: string | undefined) => Promise<unknown>;
   createUser: (
@@ -39,6 +41,8 @@ type Actions = {
     imageUrl: string
   ) => Promise<User>;
   setOpenDeleteSuccess: (openDeleteSucces: boolean) => void;
+  setOpenCreateSuccess: (openCreateSucces: boolean) => void;
+  setOpenUpdateSuccess: (openUpdateSucces: boolean) => void;
   setPage: (page: number) => void;
   setLang: (lang: Language) => void;
 };
@@ -48,7 +52,11 @@ export type UsersListActions = Actions;
 export type State = {
   users: User[];
   openCreate: boolean;
-  openDeleteSucces: boolean;
+  openDelete: boolean;
+  openUpdate: boolean;
+  openDeleteSuccess: boolean;
+  openCreateSuccess: boolean;
+  openUpdateSuccess: boolean;
   page: number;
   lang: Language;
 };
@@ -60,14 +68,20 @@ export const config: StoreConfig<State, Actions> = {
   getInitialState: () => ({
     users: [],
     openCreate: false,
-    openDeleteSucces: false,
+    openDelete: false,
+    openUpdate: false,
+    openDeleteSuccess: false,
+    openCreateSuccess: false,
+    openUpdateSuccess: false,
     page: 1,
     lang: Language.FR,
   }),
 
   actions: {
     setUsers: setArgIn("users"), //({ args: [users] }) => ({ users }),
-    setOpenDeleteSuccess: setArgIn("openDeleteSucces"),
+    setOpenDeleteSuccess: setArgIn("openDeleteSuccess"),
+    setOpenUpdateSuccess: setArgIn("openUpdateSuccess"),
+    setOpenCreateSuccess: setArgIn("openCreateSuccess"),
     setPage: setArgIn("page"),
     setLang: setArgIn("lang"),
     loadUsers: {
@@ -92,6 +106,8 @@ export const config: StoreConfig<State, Actions> = {
       },
     },
     showCreateModal: ({ args: [openCreate] }) => ({ openCreate }),
+    showDeleteModal: ({ args: [openDelete] }) => ({ openDelete }),
+    showUpdateModal: ({ args: [openUpdate] }) => ({ openUpdate }),
     createUser: {
       getPromise: ({ args: [_id, firstName, lastName, birthdate, imageUrl] }) =>
         fetch(`http://localhost:3050/api/users`, {
@@ -109,6 +125,7 @@ export const config: StoreConfig<State, Actions> = {
       sideEffects: ({ a }) => {
         a.showCreateModal(false);
         a.setPage(1);
+        a.setOpenCreateSuccess(true);
       },
     },
     updateUser: {
@@ -128,9 +145,14 @@ export const config: StoreConfig<State, Actions> = {
         newUsers[index] = res;
         return { users: newUsers };
       },
+      sideEffects: ({ a }) => {
+        a.showUpdateModal(false);
+        a.setOpenUpdateSuccess(true);
+      },
     },
   },
   logEnabled: true,
+  onMount: () => dayjs.locale("fr"),
 };
 
 type UsersContextProps = State &

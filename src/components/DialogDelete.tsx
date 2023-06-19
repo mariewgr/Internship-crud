@@ -3,30 +3,23 @@ import {
   DialogTitle,
   DialogActions,
   DialogContent,
-  Snackbar,
 } from "@material-ui/core";
 import Button from "@mui/material/Button";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import UsersContext from "../contexts/UsersContext";
-import { Alert, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 type DialogDeleteProps = {
   open: boolean;
   setOpen: (bool: boolean) => void;
   id: string;
-  setOpenSucces: (bool: boolean) => void;
 };
 export default function DialogDelete(p: DialogDeleteProps) {
   const { open, setOpen } = p;
-  const {
-    loadingMap,
-    errorMap,
-    deleteUser,
-    setOpenDeleteSuccess,
-    openDeleteSucces,
-  } = useContext(UsersContext);
+  const { loadingMap, errorMap, deleteUser, setOpenDeleteSuccess } =
+    useContext(UsersContext);
 
   const { t } = useTranslation();
 
@@ -65,7 +58,7 @@ export default function DialogDelete(p: DialogDeleteProps) {
                 deleteUser(p.id);
                 if (!errorMap.deleteUser) {
                   setOpen(false);
-                  p.setOpenSucces(true);
+                  setOpenDeleteSuccess(true);
                 }
               }}
               disabled={loadingMap.deleteUser}
@@ -77,20 +70,6 @@ export default function DialogDelete(p: DialogDeleteProps) {
           </Link>
         </DialogActions>
       </Dialog>
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={openDeleteSucces}
-        autoHideDuration={3000}
-        onClose={() => setOpenDeleteSuccess(false)}
-      >
-        <Alert
-          onClose={() => setOpenDeleteSuccess(false)}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          {t("deleteUserSuccess")}
-        </Alert>
-      </Snackbar>
     </>
   );
 }

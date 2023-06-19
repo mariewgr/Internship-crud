@@ -8,6 +8,9 @@ import { UsersContextProvider } from "./contexts/UsersContext.tsx";
 import { createTheme, ThemeProvider } from "@material-ui/core";
 import { blue, red } from "@material-ui/core/colors";
 import "./translate/translate.tsx";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import "dayjs/locale/fr";
 
 const router = createBrowserRouter([
   {
@@ -39,10 +42,12 @@ const theme = createTheme({
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <UsersContextProvider>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <ThemeProvider theme={theme}>
-        <RouterProvider router={router} />
+        <UsersContextProvider>
+          <RouterProvider router={router} />
+        </UsersContextProvider>
       </ThemeProvider>
-    </UsersContextProvider>
+    </LocalizationProvider>
   </React.StrictMode>
 );

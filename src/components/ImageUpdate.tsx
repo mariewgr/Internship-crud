@@ -21,11 +21,16 @@ type ImageUpdateProps = {
 };
 
 export default function ImageUpdate(p: ImageUpdateProps) {
-  const { errorMap, updateUser, loadingMap } = useContext(UsersContext);
+  const {
+    errorMap,
+    updateUser,
+    loadingMap,
+    openUpdateSuccess,
+    setOpenUpdateSuccess,
+  } = useContext(UsersContext);
 
   const [imageInput, setImageInput] = useState(p.user.imageUrl);
   const [wrongInput, setWrongInput] = useState(false);
-  const [openSuccess, setOpenSuccess] = useState(false);
 
   const { t } = useTranslation();
 
@@ -45,7 +50,7 @@ export default function ImageUpdate(p: ImageUpdateProps) {
       setWrongInput(false);
 
       if (!errorMap.updateUser) {
-        setOpenSuccess(true);
+        setOpenUpdateSuccess(true);
         p.setOpenImage(false);
       }
     } else {
@@ -148,12 +153,12 @@ export default function ImageUpdate(p: ImageUpdateProps) {
       </Dialog>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={openSuccess}
+        open={openUpdateSuccess}
         autoHideDuration={3000}
-        onClose={() => setOpenSuccess(false)}
+        onClose={() => setOpenUpdateSuccess(false)}
       >
         <Alert
-          onClose={() => setOpenSuccess(false)}
+          onClose={() => setOpenUpdateSuccess(false)}
           severity="success"
           sx={{ width: "100%" }}
         >

@@ -31,4 +31,8 @@ i18n
     },
   });
 
+i18n.init({
+  fallbackLng: "en",
+});
+
 export default i18n;

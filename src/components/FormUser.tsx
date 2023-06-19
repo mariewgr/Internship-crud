@@ -5,14 +5,32 @@ import {
   DialogTitle,
   TextField,
 } from "@material-ui/core";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent } from "react";
 import { useLocalStore, StoreConfig } from "state-decorator";
-import { Alert, Container, Snackbar, Stack } from "@mui/material";
+import { Alert, Container, Stack } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers";
 import { User } from "../contexts/UsersContext";
 import { useTranslation } from "react-i18next";
+
+type ModalUserProps = {
+  action: (
+    id: string,
+    firstName: string,
+    lastName: string,
+    birthdate: Dayjs | null,
+    imageUrl: string
+  ) => Promise<User>;
+  isError: boolean;
+  isLoading: boolean;
+  showModal: (open: boolean) => void;
+  open: boolean;
+  user: User;
+  title: string;
+  messageSuccess: string;
+};
+
+type Props = ModalUserProps;
 
 export type Actions = {
   firstNameOnTextChange: (firstNameText: string) => void;
@@ -34,12 +52,12 @@ export type State = {
   requireImageUrl: boolean;
 };
 
-export const config: StoreConfig<State, Actions> = {
-  getInitialState: () => ({
-    firstNameText: "",
-    lastNameText: "",
-    birthdateText: null,
-    imageUrl: "",
+export const config: StoreConfig<State, Actions, Props> = {
+  getInitialState: (p) => ({
+    firstNameText: p.user.firstName,
+    lastNameText: p.user.lastName,
+    birthdateText: p.user.birthdate,
+    imageUrl: p.user.imageUrl,
     requireFirstName: true,
     requireLastName: true,
     requireImageUrl: true,
@@ -57,6 +75,7 @@ export const config: StoreConfig<State, Actions> = {
     }),
     setRequireImageUrl: ({ args: [imageUrl] }) => ({
       requireImageUrl:
+        imageUrl !== null &&
         imageUrl.match(
           /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
         ) !== null,
@@ -69,37 +88,18 @@ export function validateForm(
   lastNameText: string,
   imageUrlText: string
 ) {
-  return (
-    firstNameText !== "" &&
-    lastNameText !== "" &&
+  const validateImageUrl =
+    imageUrlText !== null &&
     imageUrlText.match(
       /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
-    ) !== null
-  );
+    ) !== null;
+  return firstNameText !== "" && lastNameText !== "" && validateImageUrl;
 }
-type ModalUserProps = {
-  action: (
-    id: string,
-    firstName: string,
-    lastName: string,
-    birthdate: Dayjs | null,
-    imageUrl: string
-  ) => Promise<User>;
-  isError: undefined | Error;
-  isLoading: boolean | undefined;
-  showModal: (open: boolean) => void;
-  open: boolean;
-  user: User;
-  title: string;
-  messageSuccess: string;
-};
 
 export default function FormUser(p: ModalUserProps) {
-  const { state: s, actions } = useLocalStore(config);
+  const { state: s, actions } = useLocalStore(config, p);
 
   const ariaLabel = { "aria-label": "description" };
-
-  const [openSuccess, setOpenSucces] = useState(false);
 
   const { t } = useTranslation();
 
@@ -131,25 +131,8 @@ export default function FormUser(p: ModalUserProps) {
         s.birthdateText,
         s.imageUrl
       );
-      if (p.isError) {
-        actions.firstNameOnTextChange(s.firstNameText);
-        actions.lastNameOnTextChange(s.lastNameText);
-        actions.birthdateOnTextChange(s.birthdateText);
-        actions.imageUrlOnTextChange(s.imageUrl);
-      } else {
-        p.showModal(false);
-        setOpenSucces(true);
-      }
     }
   };
-
-  useEffect(() => {
-    actions.firstNameOnTextChange(p.user.firstName);
-    actions.lastNameOnTextChange(p.user.lastName);
-    actions.birthdateOnTextChange(p.user.birthdate);
-    actions.imageUrlOnTextChange(p.user.imageUrl);
-  }, []);
-
   return (
     <div>
       <Dialog
@@ -157,9 +140,7 @@ export default function FormUser(p: ModalUserProps) {
         onClose={() => p.showModal(false)}
         aria-labelledby="responsive-dialog-title"
       >
-        {p.isError && (
-          <Alert severity="error">This is an error alert — check it out!</Alert>
-        )}
+        {p.isError && <Alert severity="error">{t("noDelete")}</Alert>}
         <DialogTitle
           id="responsive-dialog-title"
           style={{
@@ -193,72 +174,42 @@ export default function FormUser(p: ModalUserProps) {
               }}
               spacing={2}
             >
-              {s.requireFirstName ? (
-                <TextField
-                  style={{ minWidth: 250 }}
-                  label={t("firstname")}
-                  placeholder={t("firstname")}
-                  inputProps={ariaLabel}
-                  onChange={handleFirstNameTextChange}
-                  variant="outlined"
-                  defaultValue={p.user.firstName}
-                />
-              ) : (
-                <TextField
-                  required
-                  error
-                  style={{ minWidth: 250 }}
-                  label={t("firstname")}
-                  placeholder={t("firstname")}
-                  inputProps={ariaLabel}
-                  onChange={handleFirstNameTextChange}
-                  variant="outlined"
-                  helperText="Required"
-                  defaultValue={p.user.lastName}
-                />
-              )}
-              {s.requireLastName ? (
-                <TextField
-                  style={{ minWidth: 250 }}
-                  label={t("lastname")}
-                  placeholder={t("lastname")}
-                  inputProps={ariaLabel}
-                  onChange={handleLastNameTextChange}
-                  variant="outlined"
-                  defaultValue={p.user.lastName}
-                />
-              ) : (
-                <TextField
-                  error
-                  required
-                  style={{ minWidth: 250 }}
-                  label={t("lastname")}
-                  placeholder={t("lastname")}
-                  inputProps={ariaLabel}
-                  onChange={handleLastNameTextChange}
-                  variant="outlined"
-                  helperText="Required"
-                  defaultValue={p.user.lastName}
-                />
-              )}
-              {p.user.birthdate === null ? (
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    sx={{ minWidth: 250 }}
-                    label={t("birthdate")}
-                    onChange={handleBirthdateTextChange}
-                  />
-                </LocalizationProvider>
-              ) : (
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    sx={{ minWidth: 250 }}
-                    label={t("birthdate")}
-                    onChange={handleBirthdateTextChange}
-                    defaultValue={dayjs(p.user.birthdate) as undefined}
-                  />
-                </LocalizationProvider>
-              )}
+              <TextField
+                required
+                error={!s.requireFirstName}
+                style={{ minWidth: 250 }}
+                label={t("firstname")}
+                placeholder={t("firstname")}
+                inputProps={ariaLabel}
+                onChange={handleFirstNameTextChange}
+                variant="outlined"
+                helperText={t("required")}
+                defaultValue={p.user.lastName}
+              />
+              <TextField
+                error={!s.requireLastName}
+                required
+                style={{ minWidth: 250 }}
+                label={t("lastname")}
+                placeholder={t("lastname")}
+                inputProps={ariaLabel}
+                onChange={handleLastNameTextChange}
+                variant="outlined"
+                helperText={t("required")}
+                defaultValue={p.user.lastName}
+              />
+
+              <DatePicker
+                sx={{ minWidth: 250 }}
+                label={t("birthdate")}
+                onChange={handleBirthdateTextChange}
+                defaultValue={
+                  p.user.birthdate === null
+                    ? null
+                    : (dayjs(p.user.birthdate) as undefined)
+                }
+              />
+
               {s.requireImageUrl ? (
                 <TextField
                   style={{ minWidth: 250 }}
@@ -315,20 +266,6 @@ export default function FormUser(p: ModalUserProps) {
           </Button>
         </Container>
       </Dialog>
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={openSuccess}
-        autoHideDuration={3000}
-        onClose={() => setOpenSucces(false)}
-      >
-        <Alert
-          onClose={() => setOpenSucces(false)}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          {p.messageSuccess}
-        </Alert>
-      </Snackbar>
     </div>
   );
 }

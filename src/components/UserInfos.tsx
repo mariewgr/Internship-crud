@@ -2,7 +2,7 @@ import { useContext } from "react";
 import UsersContext from "../contexts/UsersContext";
 import { Link, useParams } from "react-router-dom";
 import "./UserInfo.css";
-import { AppBar, Box, Button, Fab, Toolbar } from "@material-ui/core";
+import { AppBar, Box, Button, Fab, Snackbar, Toolbar } from "@material-ui/core";
 import DialogDelete from "./DialogDelete";
 import FormUser from "./FormUser";
 import EditIcon from "@mui/icons-material/Edit";
@@ -52,8 +52,15 @@ export const configUserInfo: StoreConfig<State, Actions> = {
 };
 export default function UserInfo() {
   const { userId } = useParams();
-  const { users, updateUser, loadingMap, errorMap, setOpenDeleteSuccess } =
-    useContext(UsersContext);
+  const {
+    users,
+    updateUser,
+    loadingMap,
+    errorMap,
+    setOpenDeleteSuccess,
+    setOpenUpdateSuccess,
+    openUpdateSuccess,
+  } = useContext(UsersContext);
 
   const { state: s, actions: a } = useLocalStore(configUserInfo);
 
@@ -103,12 +110,7 @@ export default function UserInfo() {
       >
         <DeleteIcon />
       </Button>
-      <DialogDelete
-        open={s.openDelete}
-        setOpen={a.setOpenDelete}
-        id={userId}
-        setOpenSucces={setOpenDeleteSuccess}
-      />
+      <DialogDelete open={s.openDelete} setOpen={a.setOpenDelete} id={userId} />
       <Button
         onClick={() => a.setOpenUpdate(true)}
         style={{
@@ -134,11 +136,25 @@ export default function UserInfo() {
         showModal={a.setOpenUpdate}
         open={s.openUpdate}
         isLoading={loadingMap.updateUser}
-        isError={errorMap.updateUser}
+        isError={!!errorMap.updateUser}
         user={user}
         title={t("edit")}
         messageSuccess={t("updateSuccess")}
       />
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={openUpdateSuccess}
+        autoHideDuration={3000}
+        onClose={() => setOpenUpdateSuccess(false)}
+      >
+        <Alert
+          onClose={() => setOpenUpdateSuccess(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {t("updateSuccess")}
+        </Alert>
+      </Snackbar>
       <ImageUpdate
         openImage={s.openImage}
         setOpenImage={a.setOpenImage}

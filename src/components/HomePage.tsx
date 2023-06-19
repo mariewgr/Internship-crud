@@ -11,6 +11,7 @@ import {
   Fab,
   FormControlLabel,
   InputBase,
+  Snackbar,
   TextField,
   Toolbar,
   alpha,
@@ -145,6 +146,8 @@ export default function HomePage() {
     errorMap,
     setPage,
     page,
+    openCreateSuccess,
+    setOpenCreateSuccess,
   } = useContext(UsersContext);
   const { state: s, actions: a } = useLocalStore(configHomePage);
   const ariaLabel = { "aria-label": "description" };
@@ -253,7 +256,7 @@ export default function HomePage() {
               <p style={{ paddingRight: 40 }}>{t("filters")}</p>
               <FormControlLabel
                 control={<Checkbox />}
-                label={t("birthdareKnown")}
+                label={t("birthdateKnown")}
                 color="secondary"
                 onClick={handleCheckBox}
               />
@@ -283,22 +286,38 @@ export default function HomePage() {
           </Container>
         </Box>
         <Container style={{ alignContent: "center" }}>
-          <FormUser
-            action={createUser}
-            isError={errorMap.createUser}
-            isLoading={loadingMap.createUser}
-            showModal={showCreateModal}
-            open={openCreate}
-            user={{
-              id: "",
-              firstName: "",
-              lastName: "",
-              birthdate: null,
-              imageUrl: "",
-            }}
-            title={t("createTitle")}
-            messageSuccess={t("createSuccess")}
-          />
+          {openCreate && (
+            <FormUser
+              action={createUser}
+              isError={!!errorMap.createUser}
+              isLoading={loadingMap.createUser}
+              showModal={showCreateModal}
+              open={openCreate}
+              user={{
+                id: "",
+                firstName: "",
+                lastName: "",
+                birthdate: null,
+                imageUrl: "",
+              }}
+              title={t("createTitle")}
+              messageSuccess={t("createSuccess")}
+            />
+          )}
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            open={openCreateSuccess}
+            autoHideDuration={3000}
+            onClose={() => setOpenCreateSuccess(false)}
+          >
+            <Alert
+              onClose={() => setOpenCreateSuccess(false)}
+              severity="success"
+              sx={{ width: "100%" }}
+            >
+              {t("createSuccess")}
+            </Alert>
+          </Snackbar>
           <BasicTable
             users={s.filteredUsers.slice(
               usersPerPage * (page - 1),

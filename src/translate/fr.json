@@ -15,21 +15,22 @@
     "firstname" : "Prénom" ,
     "lastname" : "Nom" ,
     "imageUrl" : "Lien Image" ,
-    "notALink" : "N'est pas un lien" ,
+    "notALink" : "Doit être un lien" ,
     "id" : "Identifiant" ,
     "noBirthdate" : "Pas de date d'Anniversaire enregistrée" ,
     "usersList" : "Liste des utilisateurs" ,
     "noDelete" : "Impossible de supprimer l'utilisateur" ,
     "search" : "Rechercher..." ,
-    "birthdareKnown" : "Date de naissance enregistrée" ,
+    "birthdateKnown" : "Date de naissance enregistrée" ,
     "filters" : "Filtres:" ,
     "year" : "Année de naissance" ,
-    "noNumber" : "N'est pas un nombre" ,
+    "noNumber" : "Doit être un nombre" ,
     "noUpdateImage" : "Impossible de mettre l'image à jour" ,
     "updateImage" : "Mettre l'image à jour" ,
     "updateImageSuccess" : "L'image a été mise à jour avec succès" ,
     "edit" : "Mettre l'utilisateur à jour" ,
-    "updateSuccess" : "L'utilisateur a été mis à jour avec succès"
+    "updateSuccess" : "L'utilisateur a été mis à jour avec succès",
+    "required" : "Nécessaire"
 }    
     
  
