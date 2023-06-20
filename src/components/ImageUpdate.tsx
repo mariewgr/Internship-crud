@@ -7,6 +7,7 @@ import {
   DialogTitle,
   TextField,
   Snackbar,
+  Typography,
 } from "@material-ui/core";
 import { Alert, Stack } from "@mui/material";
 import { ChangeEvent, useContext, useState } from "react";
@@ -64,26 +65,20 @@ export default function ImageUpdate(p: ImageUpdateProps) {
 
   return (
     <>
-      <Button
+      <Fab
         onClick={() => p.setOpenImage(true)}
+        color="secondary"
+        className="edit"
+        aria-label="image"
         style={{
-          borderRadius: 10,
+          color: "white",
+          position: "fixed",
+          top: 75,
+          right: 85,
         }}
       >
-        <Fab
-          color="secondary"
-          className="edit"
-          aria-label="image"
-          style={{
-            color: "white",
-            position: "fixed",
-            top: 75,
-            right: 85,
-          }}
-        >
-          <ImageIcon />
-        </Fab>
-      </Button>
+        <ImageIcon />
+      </Fab>
       <Dialog
         open={p.openImage}
         onClose={() => p.setOpenImage(false)}
@@ -101,28 +96,23 @@ export default function ImageUpdate(p: ImageUpdateProps) {
             padding: 0,
           }}
         >
-          <p style={{ fontSize: 30 }}>{t("updateImage")}</p>
+          <Typography style={{ fontSize: 30 }}>{t("updateImage")}</Typography>
         </DialogTitle>
-        <DialogActions style={{ minWidth: 300, justifyContent: "center" }}>
+        <DialogActions
+          style={{ minWidth: 300, justifyContent: "center", margin: 30 }}
+        >
           <Stack spacing={3}>
-            {wrongInput ? (
-              <TextField
-                error
-                label={t("imageUrl")}
-                placeholder={t("imageUrl")}
-                onChange={handleImageInputChange}
-                variant="outlined"
-                defaultValue={p.user.imageUrl}
-              />
-            ) : (
-              <TextField
-                label={t("imageUrl")}
-                placeholder={t("imageUrl")}
-                onChange={handleImageInputChange}
-                variant="outlined"
-                defaultValue={p.user.imageUrl}
-              />
-            )}
+            <TextField
+              size="small"
+              error={wrongInput}
+              label={t("imageUrl")}
+              placeholder={t("imageUrl")}
+              onChange={handleImageInputChange}
+              variant="outlined"
+              defaultValue={p.user.imageUrl}
+              helperText={wrongInput && t("notALink")}
+              style={{ paddingBottom: 5 }}
+            />
           </Stack>
         </DialogActions>
         <Box

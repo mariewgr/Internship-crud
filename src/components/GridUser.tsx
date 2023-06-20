@@ -18,10 +18,10 @@ export default function GrideUser(p: GrideUserProps) {
         <Grid
           container
           direction="column"
-          spacing={3}
+          spacing={4}
           style={{ alignContent: "center" }}
         >
-          <div style={{ background: "white" }}>
+          <div style={{ background: "white", borderRadius: 5 }}>
             <Grid
               container
               item

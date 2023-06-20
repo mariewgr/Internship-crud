@@ -43,6 +43,7 @@ type Actions = {
   setOpenDeleteSuccess: (openDeleteSucces: boolean) => void;
   setOpenCreateSuccess: (openCreateSucces: boolean) => void;
   setOpenUpdateSuccess: (openUpdateSucces: boolean) => void;
+  setOpenUpdateImageSuccess: (openUpdateSucces: boolean) => void;
   setPage: (page: number) => void;
   setLang: (lang: Language) => void;
 };
@@ -57,6 +58,7 @@ export type State = {
   openDeleteSuccess: boolean;
   openCreateSuccess: boolean;
   openUpdateSuccess: boolean;
+  openUpdateImageSuccess: boolean;
   page: number;
   lang: Language;
 };
@@ -73,6 +75,7 @@ export const config: StoreConfig<State, Actions> = {
     openDeleteSuccess: false,
     openCreateSuccess: false,
     openUpdateSuccess: false,
+    openUpdateImageSuccess: false,
     page: 1,
     lang: Language.FR,
   }),
@@ -81,6 +84,7 @@ export const config: StoreConfig<State, Actions> = {
     setUsers: setArgIn("users"), //({ args: [users] }) => ({ users }),
     setOpenDeleteSuccess: setArgIn("openDeleteSuccess"),
     setOpenUpdateSuccess: setArgIn("openUpdateSuccess"),
+    setOpenUpdateImageSuccess: setArgIn("openUpdateImageSuccess"),
     setOpenCreateSuccess: setArgIn("openCreateSuccess"),
     setPage: setArgIn("page"),
     setLang: setArgIn("lang"),
@@ -137,7 +141,7 @@ export const config: StoreConfig<State, Actions> = {
           },
           body: JSON.stringify({ firstName, lastName, birthdate, imageUrl }),
         }).then((res) =>
-          res.ok ? res.json() : Promise.reject(new Error("didn't create"))
+          res.ok ? res.json() : Promise.reject(new Error("didn't update"))
         ),
       effects: ({ s, args: [userId], res }) => {
         const newUsers = [...s.users];

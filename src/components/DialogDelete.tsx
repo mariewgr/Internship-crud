@@ -35,14 +35,17 @@ export default function DialogDelete(p: DialogDeleteProps) {
           style={{
             minHeight: 50,
             textAlign: "center",
-            padding: 0,
+            paddingTop: 20,
             fontStyle: "Helvetica",
           }}
         >
           {t("deleteUser")}
         </DialogTitle>
         <DialogContent style={{ fontStyle: "Helvetica" }}>
-          <Typography> {t("deleteUserConfirmation")}</Typography>{" "}
+          <Typography style={{ paddingBottom: 10 }}>
+            {" "}
+            {t("deleteUserConfirmation")}
+          </Typography>{" "}
         </DialogContent>
         <DialogActions style={{ justifyContent: "space-between" }}>
           <Button

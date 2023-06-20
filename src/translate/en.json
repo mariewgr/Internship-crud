@@ -26,6 +26,8 @@
     "noNumber" :   "Must be a number" ,
     "noUpdateImage" :   "Could not update the image" ,
     "updateImage" :   "Update Image" ,
+    "noUpdate" : "Could not update the user",
+    "noCreate" : "Could not create the user",
     "updateImageSuccess" :   "Image updated with success" ,
     "edit" :   "Update user" ,
     "updateSuccess" :   "User updated with success",

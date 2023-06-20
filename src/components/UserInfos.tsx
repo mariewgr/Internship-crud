@@ -14,11 +14,9 @@ import { setArgIn } from "state-decorator/helpers";
 import GrideUser from "./GridUser";
 import ImageUpdate from "./ImageUpdate";
 import { useTranslation } from "react-i18next";
-import Langue from "./Langue";
+import Langue from "./Language";
 
 type Actions = {
-  setOpenDelete: (openDelete: boolean) => void;
-  setOpenUpdate: (openUpdate: boolean) => void;
   setNewImage: (newImage: string) => void;
   setOpenImage: (openImage: boolean) => void;
 };
@@ -26,8 +24,6 @@ type Actions = {
 export type UserInfosActions = Actions;
 
 type State = {
-  openDelete: boolean;
-  openUpdate: boolean;
   newImage: string;
   openImage: boolean;
 };
@@ -36,15 +32,11 @@ export type UserInfosState = State;
 // Initial state & actions
 export const configUserInfo: StoreConfig<State, Actions> = {
   getInitialState: () => ({
-    openDelete: false,
-    openUpdate: false,
     openImage: false,
     newImage: "",
   }),
 
   actions: {
-    setOpenDelete: setArgIn("openDelete"),
-    setOpenUpdate: setArgIn("openUpdate"),
     setNewImage: setArgIn("newImage"),
     setOpenImage: setArgIn("openImage"),
   },
@@ -57,9 +49,14 @@ export default function UserInfo() {
     updateUser,
     loadingMap,
     errorMap,
-    setOpenDeleteSuccess,
     setOpenUpdateSuccess,
     openUpdateSuccess,
+    openUpdateImageSuccess,
+    openUpdate,
+    showUpdateModal,
+    showDeleteModal,
+    openDelete,
+    setOpenUpdateImageSuccess,
   } = useContext(UsersContext);
 
   const { state: s, actions: a } = useLocalStore(configUserInfo);
@@ -95,7 +92,7 @@ export default function UserInfo() {
         newImage={s.newImage}
       />
       <Button
-        onClick={() => a.setOpenDelete(true)}
+        onClick={() => showDeleteModal(true)}
         style={{
           borderRadius: 150,
           width: 55,
@@ -110,36 +107,39 @@ export default function UserInfo() {
       >
         <DeleteIcon />
       </Button>
-      <DialogDelete open={s.openDelete} setOpen={a.setOpenDelete} id={userId} />
-      <Button
-        onClick={() => a.setOpenUpdate(true)}
+      <DialogDelete open={openDelete} setOpen={showDeleteModal} id={userId} />
+
+      <Fab
+        color="secondary"
+        className="fabEdit"
+        aria-label="edit"
         style={{
-          borderRadius: 150,
+          position: "fixed",
+          top: 75,
+          right: 15,
+          color: "white",
         }}
+        onClick={() => showUpdateModal(true)}
       >
-        <Fab
-          color="secondary"
-          className="fabEdit"
-          aria-label="edit"
-          style={{
-            position: "fixed",
-            top: 75,
-            right: 15,
-            color: "white",
-          }}
-        >
-          <EditIcon />
-        </Fab>
-      </Button>
-      <FormUser
-        action={updateUser}
-        showModal={a.setOpenUpdate}
-        open={s.openUpdate}
-        isLoading={loadingMap.updateUser}
-        isError={!!errorMap.updateUser}
+        <EditIcon />
+      </Fab>
+      {openUpdate && (
+        <FormUser
+          action={updateUser}
+          showModal={showUpdateModal}
+          open={openUpdate}
+          isLoading={loadingMap.updateUser}
+          isError={!!errorMap.updateUser}
+          user={user}
+          title={t("edit")}
+          messageSuccess={t("updateSuccess")}
+          messageError={t("noUpdate")}
+        />
+      )}
+      <ImageUpdate
+        openImage={s.openImage}
+        setOpenImage={a.setOpenImage}
         user={user}
-        title={t("edit")}
-        messageSuccess={t("updateSuccess")}
       />
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
@@ -155,11 +155,20 @@ export default function UserInfo() {
           {t("updateSuccess")}
         </Alert>
       </Snackbar>
-      <ImageUpdate
-        openImage={s.openImage}
-        setOpenImage={a.setOpenImage}
-        user={user}
-      />
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={openUpdateImageSuccess}
+        autoHideDuration={3000}
+        onClose={() => setOpenUpdateImageSuccess(false)}
+      >
+        <Alert
+          onClose={() => setOpenUpdateImageSuccess(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {t("updateImageSuccess")}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

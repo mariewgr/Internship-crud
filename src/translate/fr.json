@@ -26,6 +26,8 @@
     "year" : "Année de naissance" ,
     "noNumber" : "Doit être un nombre" ,
     "noUpdateImage" : "Impossible de mettre l'image à jour" ,
+    "noUpdate" : "Impossible de mettre l'utilisateur à jour",
+    "noCreate" : "Impossible de créer l'utilisateur",
     "updateImage" : "Mettre l'image à jour" ,
     "updateImageSuccess" : "L'image a été mise à jour avec succès" ,
     "edit" : "Mettre l'utilisateur à jour" ,

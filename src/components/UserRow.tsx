@@ -36,10 +36,11 @@ export default function UserRow(p: UserRowProps) {
     openDeleteSuccess,
     setOpenUpdateSuccess,
     openUpdateSuccess,
-    showUpdateModal,
     openUpdate,
+    showUpdateModal,
   } = useContext(UsersContext);
   const [openDelete, setDeleteOpen] = useState(false);
+  const [openUpdateLocal, setUpdateOpen] = useState(false);
 
   const { t } = useTranslation();
 
@@ -58,12 +59,29 @@ export default function UserRow(p: UserRowProps) {
             <div> {t("noBirthdate")}</div>
           )}
         </TableCell>
-        <TableCell align="center">
+        <TableCell
+          align="center"
+          style={{ display: "flex", justifyContent: "space-evenly" }}
+        >
           <>
-            <IconButton aria-label="delete" onClick={() => setDeleteOpen(true)}>
+            <IconButton
+              aria-label="delete"
+              onClick={() => setDeleteOpen(true)}
+              size="small"
+            >
               <DeleteIcon />
             </IconButton>
-            <IconButton aria-label="delete"></IconButton>
+
+            <IconButton
+              aria-label="edit"
+              onClick={() => {
+                setUpdateOpen(true);
+                showUpdateModal(true);
+              }}
+              size="small"
+            >
+              <EditIcon />
+            </IconButton>
             {openDelete && (
               <DialogDelete
                 open={openDelete}
@@ -71,36 +89,19 @@ export default function UserRow(p: UserRowProps) {
                 id={user.id}
               />
             )}
-
-            <IconButton aria-label="edit" onClick={() => showUpdateModal(true)}>
-              <EditIcon />
-            </IconButton>
             {openUpdate && (
               <FormUser
                 action={updateUser}
-                showModal={showUpdateModal}
-                open={openUpdate}
+                showModal={setUpdateOpen}
+                open={openUpdateLocal}
                 isLoading={loadingMap.updateUser}
                 isError={!!errorMap.updateUser}
                 user={user}
                 title={t("edit")}
                 messageSuccess={t("updateSuccess")}
+                messageError={t("noUpdate")}
               />
             )}
-            <Snackbar
-              anchorOrigin={{ vertical: "top", horizontal: "right" }}
-              open={openUpdateSuccess}
-              autoHideDuration={3000}
-              onClose={() => setOpenUpdateSuccess(false)}
-            >
-              <Alert
-                onClose={() => setOpenUpdateSuccess(false)}
-                severity="success"
-                sx={{ width: "100%" }}
-              >
-                {t("updateSuccess")}
-              </Alert>
-            </Snackbar>
           </>
         </TableCell>
       </TableRow>
@@ -116,6 +117,20 @@ export default function UserRow(p: UserRowProps) {
           sx={{ width: "100%" }}
         >
           {t("deleteUserSuccess")}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={openUpdateSuccess}
+        autoHideDuration={3000}
+        onClose={() => setOpenUpdateSuccess(false)}
+      >
+        <Alert
+          onClose={() => setOpenUpdateSuccess(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {t("updateSuccess")}
         </Alert>
       </Snackbar>
     </UserContext.Provider>

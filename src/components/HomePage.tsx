@@ -14,6 +14,7 @@ import {
   Snackbar,
   TextField,
   Toolbar,
+  Typography,
   alpha,
   styled,
 } from "@material-ui/core";
@@ -23,7 +24,7 @@ import { Alert, Pagination } from "@mui/material";
 import dayjs from "dayjs";
 import useLocalStore, { StoreConfig } from "state-decorator";
 import { useTranslation } from "react-i18next";
-import Langue from "./Langue";
+import Langue from "./Language";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -213,137 +214,82 @@ export default function HomePage() {
         <Box
           style={{
             display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            paddingTop: 5,
-            paddingBottom: 10,
-            paddingRight: 10,
             background: "lightgrey",
+            flexDirection: "column",
           }}
         >
           <Container
             style={{
               padding: 5,
+              margin: 0,
+              marginBottom: 10,
+              borderRadius: 5,
+              background: "white",
+              maxWidth: 5000,
               display: "flex",
-              justifyContent: "center",
               alignItems: "center",
+              alignContent: "space-around",
+              justifyContent: "space-evenly",
             }}
           >
-            <div
+            <Search
               style={{
-                background: "white",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 5,
+                padding: 7,
+                margin: 0,
+                maxWidth: 300,
+                flexGrow: 1,
               }}
             >
-              <Search
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  padding: 5,
-                }}
-              >
-                <SearchIcon />
-                <StyledInputBase
-                  placeholder={t("search")}
-                  inputProps={{ "aria-label": "search" }}
-                  onChange={handleSearch}
-                />
-              </Search>
-              <p style={{ paddingRight: 40 }}>{t("filters")}</p>
-              <FormControlLabel
-                control={<Checkbox />}
-                label={t("birthdateKnown")}
-                color="secondary"
-                onClick={handleCheckBox}
+              <SearchIcon />
+              <StyledInputBase
+                placeholder={t("search")}
+                inputProps={{ "aria-label": "search" }}
+                onChange={handleSearch}
               />
-              {s.isANumber ? (
-                <TextField
-                  value={s.inputYear}
-                  placeholder="ex: 1990"
-                  inputProps={ariaLabel}
-                  onChange={handleYearChoice}
-                  variant="outlined"
-                  label={t("year")}
-                  style={{ margin: 10 }}
-                />
-              ) : (
-                <TextField
-                  error
-                  value={s.inputYear}
-                  label={t("year")}
-                  placeholder="ex: 1990"
-                  inputProps={ariaLabel}
-                  onChange={handleYearChoice}
-                  variant="outlined"
-                  helperText={t("noNumber")}
-                />
-              )}
-            </div>
-          </Container>
-        </Box>
-        <Container style={{ alignContent: "center" }}>
-          {openCreate && (
-            <FormUser
-              action={createUser}
-              isError={!!errorMap.createUser}
-              isLoading={loadingMap.createUser}
-              showModal={showCreateModal}
-              open={openCreate}
-              user={{
-                id: "",
-                firstName: "",
-                lastName: "",
-                birthdate: null,
-                imageUrl: "",
-              }}
-              title={t("createTitle")}
-              messageSuccess={t("createSuccess")}
+            </Search>
+            <Typography style={{ fontStyle: "bold" }}>
+              {t("filters")}
+            </Typography>
+            <FormControlLabel
+              control={<Checkbox />}
+              label={t("birthdateKnown")}
+              color="secondary"
+              onClick={handleCheckBox}
             />
-          )}
-          <Snackbar
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            open={openCreateSuccess}
-            autoHideDuration={3000}
-            onClose={() => setOpenCreateSuccess(false)}
-          >
-            <Alert
-              onClose={() => setOpenCreateSuccess(false)}
-              severity="success"
-              sx={{ width: "100%" }}
-            >
-              {t("createSuccess")}
-            </Alert>
-          </Snackbar>
+            <TextField
+              error={!s.isANumber}
+              value={s.inputYear}
+              label={t("year")}
+              placeholder="ex: 1990"
+              inputProps={ariaLabel}
+              onChange={handleYearChoice}
+              variant="outlined"
+              helperText={!s.isANumber && t("noNumber")}
+              size="small"
+            />
+          </Container>
           <BasicTable
             users={s.filteredUsers.slice(
               usersPerPage * (page - 1),
               usersPerPage * page
             )}
           />
-          <Button
-            onClick={() => showCreateModal(true)}
+        </Box>
+        <Container style={{ alignContent: "center" }}>
+          <Fab
+            color="secondary"
+            className="add"
+            aria-label="add"
             style={{
-              borderRadius: 150,
+              color: "white",
+              position: "fixed",
+              bottom: 16,
+              right: 16,
             }}
+            onClick={() => showCreateModal(true)}
           >
-            <Fab
-              color="secondary"
-              className="add"
-              aria-label="add"
-              style={{
-                color: "white",
-                position: "fixed",
-                bottom: 16,
-                right: 16,
-              }}
-            >
-              <AddIcon />
-            </Fab>
-          </Button>
+            <AddIcon />
+          </Fab>
         </Container>
         <div
           style={{
@@ -355,6 +301,39 @@ export default function HomePage() {
           <Pagination count={6} page={page} onChange={handlePage} />
         </div>
       </Box>
+      {openCreate && (
+        <FormUser
+          action={createUser}
+          isError={!!errorMap.createUser}
+          isLoading={loadingMap.createUser}
+          showModal={showCreateModal}
+          open={openCreate}
+          user={{
+            id: "",
+            firstName: "",
+            lastName: "",
+            birthdate: null,
+            imageUrl: "",
+          }}
+          title={t("createTitle")}
+          messageSuccess={t("createSuccess")}
+          messageError={t("noCreate")}
+        />
+      )}
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={openCreateSuccess}
+        autoHideDuration={3000}
+        onClose={() => setOpenCreateSuccess(false)}
+      >
+        <Alert
+          onClose={() => setOpenCreateSuccess(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {t("createSuccess")}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

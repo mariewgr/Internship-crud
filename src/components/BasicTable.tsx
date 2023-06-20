@@ -8,6 +8,7 @@ import Paper from "@material-ui/core/Paper";
 import { User } from "../contexts/UsersContext";
 import UserRow from "./UserRow";
 import { useTranslation } from "react-i18next";
+import { Typography } from "@material-ui/core";
 
 type BasicTableProps = {
   users: User[];
@@ -24,7 +25,7 @@ export default function BasicTable(p: BasicTableProps) {
           <TableRow>
             {rows.map((row) => (
               <TableCell align="center">
-                <p style={{ fontWeight: "bold" }}>{row}</p>
+                <Typography style={{ fontWeight: "bold" }}>{row}</Typography>
               </TableCell>
             ))}
           </TableRow>

@@ -4,14 +4,15 @@ import {
   DialogActions,
   DialogTitle,
   TextField,
+  Typography,
 } from "@material-ui/core";
 import { ChangeEvent } from "react";
 import { useLocalStore, StoreConfig } from "state-decorator";
 import { Alert, Container, Stack } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import { DatePicker } from "@mui/x-date-pickers";
 import { User } from "../contexts/UsersContext";
 import { useTranslation } from "react-i18next";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 type ModalUserProps = {
   action: (
@@ -28,6 +29,7 @@ type ModalUserProps = {
   user: User;
   title: string;
   messageSuccess: string;
+  messageError: string;
 };
 
 type Props = ModalUserProps;
@@ -112,7 +114,7 @@ export default function FormUser(p: ModalUserProps) {
   };
 
   const handleBirthdateTextChange = (event: ChangeEvent<HTMLInputElement>) => {
-    actions.birthdateOnTextChange(dayjs(event.target.value));
+    actions.birthdateOnTextChange(dayjs(event as undefined));
   };
 
   const handleImageUrlTextChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -140,20 +142,24 @@ export default function FormUser(p: ModalUserProps) {
         onClose={() => p.showModal(false)}
         aria-labelledby="responsive-dialog-title"
       >
-        {p.isError && <Alert severity="error">{t("noDelete")}</Alert>}
+        {p.isError && <Alert severity="error">{p.messageError}</Alert>}
         <DialogTitle
           id="responsive-dialog-title"
           style={{
             textAlign: "center",
             verticalAlign: "text-bottom",
-            paddingTop: 0,
-            paddingBottom: 0,
+            padding: 0,
           }}
         >
-          <p style={{ fontSize: 30 }}>{p.title}</p>
+          <Typography style={{ fontSize: 30 }}>{p.title}</Typography>
         </DialogTitle>
         <DialogActions
-          style={{ minWidth: 320, minHeight: 300, justifyContent: "center" }}
+          style={{
+            minWidth: 420,
+            minHeight: 400,
+            justifyContent: "center",
+            padding: 0,
+          }}
         >
           <Stack
             component="form"
@@ -172,35 +178,33 @@ export default function FormUser(p: ModalUserProps) {
                 alignItems: "center",
                 textAlign: "center",
               }}
-              spacing={2}
+              spacing={3}
             >
               <TextField
                 required
+                size="small"
                 error={!s.requireFirstName}
-                style={{ minWidth: 250 }}
                 label={t("firstname")}
                 placeholder={t("firstname")}
                 inputProps={ariaLabel}
                 onChange={handleFirstNameTextChange}
                 variant="outlined"
-                helperText={t("required")}
-                defaultValue={p.user.lastName}
+                helperText={!s.requireFirstName && t("required")}
+                defaultValue={p.user.firstName}
               />
               <TextField
                 error={!s.requireLastName}
                 required
-                style={{ minWidth: 250 }}
+                size="small"
                 label={t("lastname")}
                 placeholder={t("lastname")}
                 inputProps={ariaLabel}
                 onChange={handleLastNameTextChange}
                 variant="outlined"
-                helperText={t("required")}
+                helperText={!s.requireLastName && t("required")}
                 defaultValue={p.user.lastName}
               />
-
               <DatePicker
-                sx={{ minWidth: 250 }}
                 label={t("birthdate")}
                 onChange={handleBirthdateTextChange}
                 defaultValue={
@@ -209,30 +213,17 @@ export default function FormUser(p: ModalUserProps) {
                     : (dayjs(p.user.birthdate) as undefined)
                 }
               />
-
-              {s.requireImageUrl ? (
-                <TextField
-                  style={{ minWidth: 250 }}
-                  label={t("imageUrl")}
-                  placeholder={t("imageUrl")}
-                  inputProps={ariaLabel}
-                  onChange={handleImageUrlTextChange}
-                  variant="outlined"
-                  defaultValue={p.user.imageUrl}
-                />
-              ) : (
-                <TextField
-                  error
-                  style={{ minWidth: 250 }}
-                  label={t("imageUrl")}
-                  placeholder={t("imageUrl")}
-                  inputProps={ariaLabel}
-                  onChange={handleImageUrlTextChange}
-                  variant="outlined"
-                  helperText={t("notALink")}
-                  defaultValue={p.user.imageUrl}
-                />
-              )}
+              <TextField
+                error={!s.requireImageUrl}
+                size="small"
+                label={t("imageUrl")}
+                placeholder={t("imageUrl")}
+                inputProps={ariaLabel}
+                onChange={handleImageUrlTextChange}
+                variant="outlined"
+                helperText={!s.requireImageUrl && t("notALink")}
+                defaultValue={p.user.imageUrl}
+              />
             </Stack>
           </Stack>
         </DialogActions>
