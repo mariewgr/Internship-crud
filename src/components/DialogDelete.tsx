@@ -15,6 +15,7 @@ type DialogDeleteProps = {
   open: boolean;
   setOpen: (bool: boolean) => void;
   id: string;
+  object: any;
 };
 export default function DialogDelete(p: DialogDeleteProps) {
   const { open, setOpen } = p;
@@ -49,28 +50,29 @@ export default function DialogDelete(p: DialogDeleteProps) {
         </DialogContent>
         <DialogActions style={{ justifyContent: "space-between" }}>
           <Button
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpen(false);
+            }}
             style={{ color: "grey" }}
             variant="outlined"
           >
             Cancel
           </Button>
-          <Link to={"/"}>
-            <Button
-              onClick={() => {
-                deleteUser(p.id);
-                if (!errorMap.deleteUser) {
-                  setOpen(false);
-                  setOpenDeleteSuccess(true);
-                }
-              }}
-              disabled={loadingMap.deleteUser}
-              color="error"
-              variant="contained"
-            >
-              {t("delete")}
-            </Button>
-          </Link>
+          <Button
+            onClick={() => {
+              deleteUser(p.id);
+              if (!errorMap.deleteUser) {
+                setOpen(false);
+                setOpenDeleteSuccess(true);
+              }
+            }}
+            disabled={loadingMap.deleteUser}
+            color="error"
+            variant="contained"
+          >
+            <Link to={"/"}></Link>
+            {t("delete")}
+          </Button>
         </DialogActions>
       </Dialog>
     </>

@@ -1,0 +1,16 @@
+dl {
+    display: grid;
+    grid-template-columns: 3fr 13rem 10rem 10rem 10rem 3fr;
+    grid-template-rows: repeat(15, 3rem);
+}
+
+.ddImg { grid-area: 1 / 2 / 9 / 5; background: white; margin-inline-start: 0; padding-left: 6rem; padding-top: 1rem;}
+
+.dtUser { grid-area: 9 / 2 / 9 / 3; background: white; padding-left: 2rem;}
+.ddUser { grid-area: 9 / 3 / 9 / 5; background: white; margin-inline-start: 0;}
+.dtFirstName { grid-area: 10 / 2 / 10 / 3; background: white; padding-left: 2rem;}
+.ddFirstName { grid-area: 10 / 3 / 10 / 5; background: white; margin-inline-start: 0;}
+.dtLastName { grid-area: 11 / 2 / 11 / 3; background: white; padding-left: 2rem;}
+.ddLastName { grid-area: 11 / 3 / 11 / 5; background: white; margin-inline-start: 0;}
+.dtBirthdate { grid-area: 12 / 2 / 12 / 3; background: white; padding-left: 2rem;}
+.ddBirthdate { grid-area: 12 / 3 / 12 / 5; background: white; margin-inline-start: 0;}

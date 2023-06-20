@@ -5,12 +5,13 @@ import {
   DialogTitle,
   TextField,
   Typography,
+  isMuiElement,
 } from "@material-ui/core";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useContext, useRef } from "react";
 import { useLocalStore, StoreConfig } from "state-decorator";
 import { Alert, Container, Stack } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import { User } from "../contexts/UsersContext";
+import UsersContext, { User } from "../contexts/UsersContext";
 import { useTranslation } from "react-i18next";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
@@ -30,6 +31,7 @@ type ModalUserProps = {
   title: string;
   messageSuccess: string;
   messageError: string;
+  object: any;
 };
 
 type Props = ModalUserProps;
@@ -101,6 +103,8 @@ export function validateForm(
 export default function FormUser(p: ModalUserProps) {
   const { state: s, actions } = useLocalStore(config, p);
 
+  const { showUpdateModal } = useContext(UsersContext);
+
   const ariaLabel = { "aria-label": "description" };
 
   const { t } = useTranslation();
@@ -133,13 +137,20 @@ export default function FormUser(p: ModalUserProps) {
         s.birthdateText,
         s.imageUrl
       );
+      if (!p.isError) {
+        p.showModal(false);
+        setTimeout(() => p.object?.focus(), 100);
+      }
     }
   };
   return (
     <div>
       <Dialog
         open={p.open}
-        onClose={() => p.showModal(false)}
+        onClose={() => {
+          p.showModal(false);
+          setTimeout(() => p.object?.focus(), 200);
+        }}
         aria-labelledby="responsive-dialog-title"
       >
         {p.isError && <Alert severity="error">{p.messageError}</Alert>}
@@ -149,6 +160,7 @@ export default function FormUser(p: ModalUserProps) {
             textAlign: "center",
             verticalAlign: "text-bottom",
             padding: 0,
+            marginTop: 10,
           }}
         >
           <Typography style={{ fontSize: 30 }}>{p.title}</Typography>
@@ -231,18 +243,10 @@ export default function FormUser(p: ModalUserProps) {
           style={{
             display: "flex",
             justifyContent: "space-between",
+            flexDirection: "row-reverse",
             padding: 5,
           }}
         >
-          <Button
-            onClick={() => {
-              p.showModal(false);
-            }}
-            disabled={p.isLoading}
-            variant="outlined"
-          >
-            {t("cancel")}
-          </Button>
           <Button
             color="secondary"
             className="submit"
@@ -254,6 +258,16 @@ export default function FormUser(p: ModalUserProps) {
             }}
           >
             {t("submit")}
+          </Button>
+          <Button
+            onClick={() => {
+              p.showModal(false);
+              setTimeout(() => p.object?.focus(), 100);
+            }}
+            disabled={p.isLoading}
+            variant="outlined"
+          >
+            {t("cancel")}
           </Button>
         </Container>
       </Dialog>

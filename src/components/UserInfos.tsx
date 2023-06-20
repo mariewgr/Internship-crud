@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import UsersContext from "../contexts/UsersContext";
 import { Link, useParams } from "react-router-dom";
 import "./UserInfo.css";
@@ -65,6 +65,9 @@ export default function UserInfo() {
 
   const { t } = useTranslation();
 
+  const refUpdate = useRef(null);
+  const refDelete = useRef(null);
+
   return (
     <>
       <AppBar component="nav">
@@ -91,23 +94,14 @@ export default function UserInfo() {
         setNewImage={a.setNewImage}
         newImage={s.newImage}
       />
-      <Button
-        onClick={() => showDeleteModal(true)}
-        style={{
-          borderRadius: 150,
-          width: 55,
-          height: 55,
-          position: "fixed",
-          top: 75,
-          right: 155,
-          color: "orange",
-        }}
-        color="secondary"
-        variant="outlined"
-      >
-        <DeleteIcon />
-      </Button>
-      <DialogDelete open={openDelete} setOpen={showDeleteModal} id={userId} />
+      {openDelete && (
+        <DialogDelete
+          open={openDelete}
+          setOpen={showDeleteModal}
+          id={userId}
+          object={refDelete.current}
+        />
+      )}
 
       <Fab
         color="secondary"
@@ -116,13 +110,40 @@ export default function UserInfo() {
         style={{
           position: "fixed",
           top: 75,
-          right: 15,
+          right: 155,
           color: "white",
         }}
-        onClick={() => showUpdateModal(true)}
+        onClick={() => {
+          showUpdateModal(true);
+          refUpdate.current = document.activeElement;
+        }}
       >
         <EditIcon />
       </Fab>
+      <ImageUpdate
+        openImage={s.openImage}
+        setOpenImage={a.setOpenImage}
+        user={user}
+      />
+      <Button
+        onClick={() => {
+          showDeleteModal(true);
+          refDelete.current = document.activeElement;
+        }}
+        style={{
+          borderRadius: 150,
+          width: 55,
+          height: 55,
+          position: "fixed",
+          top: 75,
+          right: 15,
+          color: "orange",
+        }}
+        color="secondary"
+        variant="outlined"
+      >
+        <DeleteIcon />
+      </Button>
       {openUpdate && (
         <FormUser
           action={updateUser}
@@ -134,13 +155,9 @@ export default function UserInfo() {
           title={t("edit")}
           messageSuccess={t("updateSuccess")}
           messageError={t("noUpdate")}
+          object={refUpdate.current}
         />
       )}
-      <ImageUpdate
-        openImage={s.openImage}
-        setOpenImage={a.setOpenImage}
-        user={user}
-      />
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={openUpdateSuccess}

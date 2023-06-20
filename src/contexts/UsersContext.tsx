@@ -155,7 +155,7 @@ export const config: StoreConfig<State, Actions> = {
       },
     },
   },
-  logEnabled: true,
+  // logEnabled: true,
   onMount: () => dayjs.locale("fr"),
 };
 

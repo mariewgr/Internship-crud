@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Alert, Stack } from "@mui/material";
-import { ChangeEvent, useContext, useState } from "react";
+import { ChangeEvent, useContext, useRef, useState } from "react";
 import UsersContext, { User } from "../contexts/UsersContext";
 import ImageIcon from "@mui/icons-material/Image";
 import { useTranslation } from "react-i18next";
@@ -35,6 +35,8 @@ export default function ImageUpdate(p: ImageUpdateProps) {
 
   const { t } = useTranslation();
 
+  const refImage = useRef(null);
+
   const handleImageChange = () => {
     if (
       imageInput.match(
@@ -57,6 +59,7 @@ export default function ImageUpdate(p: ImageUpdateProps) {
     } else {
       setWrongInput(true);
     }
+    setTimeout(() => refImage.current?.focus(), 100);
   };
 
   const handleImageInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -66,7 +69,10 @@ export default function ImageUpdate(p: ImageUpdateProps) {
   return (
     <>
       <Fab
-        onClick={() => p.setOpenImage(true)}
+        onClick={() => {
+          p.setOpenImage(true);
+          refImage.current = document.activeElement;
+        }}
         color="secondary"
         className="edit"
         aria-label="image"
@@ -94,6 +100,7 @@ export default function ImageUpdate(p: ImageUpdateProps) {
             textAlign: "center",
             verticalAlign: "text-bottom",
             padding: 0,
+            marginTop: 10,
           }}
         >
           <Typography style={{ fontSize: 30 }}>{t("updateImage")}</Typography>
@@ -119,17 +126,10 @@ export default function ImageUpdate(p: ImageUpdateProps) {
           style={{
             display: "flex",
             justifyContent: "space-between",
+            flexDirection: "row-reverse",
             padding: 5,
           }}
         >
-          <Button
-            onClick={() => p.setOpenImage(false)}
-            disabled={loadingMap.updateUser}
-            variant="contained"
-            style={{ marginRight: 7 }}
-          >
-            {t("cancel")}
-          </Button>
           <Button
             color="secondary"
             onClick={handleImageChange}
@@ -138,6 +138,17 @@ export default function ImageUpdate(p: ImageUpdateProps) {
             style={{ color: "white" }}
           >
             {t("submit")}
+          </Button>
+          <Button
+            onClick={() => {
+              p.setOpenImage(false);
+              setTimeout(() => refImage.current?.focus(), 100);
+            }}
+            disabled={loadingMap.updateUser}
+            variant="contained"
+            style={{ marginRight: 7 }}
+          >
+            {t("cancel")}
           </Button>
         </Box>
       </Dialog>

@@ -2,7 +2,7 @@ import { TableRow, TableCell, IconButton, Snackbar } from "@material-ui/core";
 import UsersContext, { User } from "../contexts/UsersContext";
 import { Link } from "react-router-dom";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useRef, useState } from "react";
 import DialogDelete from "./DialogDelete";
 import FormUser from "./FormUser";
 import EditIcon from "@mui/icons-material/Edit";
@@ -36,13 +36,15 @@ export default function UserRow(p: UserRowProps) {
     openDeleteSuccess,
     setOpenUpdateSuccess,
     openUpdateSuccess,
-    openUpdate,
     showUpdateModal,
   } = useContext(UsersContext);
   const [openDelete, setDeleteOpen] = useState(false);
   const [openUpdateLocal, setUpdateOpen] = useState(false);
 
   const { t } = useTranslation();
+
+  const refDelete = useRef(null);
+  const refUpdate = useRef(null);
 
   return (
     <UserContext.Provider value={user}>
@@ -66,30 +68,32 @@ export default function UserRow(p: UserRowProps) {
           <>
             <IconButton
               aria-label="delete"
-              onClick={() => setDeleteOpen(true)}
+              onClick={() => {
+                setDeleteOpen(true);
+                refDelete.current = document.activeElement;
+              }}
               size="small"
+              id="deleteButton"
             >
               <DeleteIcon />
             </IconButton>
-
+            <DialogDelete
+              open={openDelete}
+              setOpen={setDeleteOpen}
+              id={user.id}
+              object={refDelete.current}
+            />
             <IconButton
               aria-label="edit"
               onClick={() => {
                 setUpdateOpen(true);
-                showUpdateModal(true);
+                refUpdate.current = document.activeElement;
               }}
               size="small"
             >
               <EditIcon />
             </IconButton>
-            {openDelete && (
-              <DialogDelete
-                open={openDelete}
-                setOpen={setDeleteOpen}
-                id={user.id}
-              />
-            )}
-            {openUpdate && (
+            {openUpdateLocal && (
               <FormUser
                 action={updateUser}
                 showModal={setUpdateOpen}
@@ -100,6 +104,7 @@ export default function UserRow(p: UserRowProps) {
                 title={t("edit")}
                 messageSuccess={t("updateSuccess")}
                 messageError={t("noUpdate")}
+                object={refUpdate.current}
               />
             )}
           </>

@@ -1,11 +1,9 @@
 import BasicTable from "./BasicTable";
 import FormUser from "./FormUser";
-import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   AppBar,
   Box,
-  Button,
   Checkbox,
   Container,
   Fab,
@@ -19,12 +17,13 @@ import {
   styled,
 } from "@material-ui/core";
 import UsersContext, { User } from "../contexts/UsersContext";
-import { ChangeEvent, useContext, useEffect } from "react";
+import { ChangeEvent, useContext, useEffect, useRef } from "react";
 import { Alert, Pagination } from "@mui/material";
 import dayjs from "dayjs";
 import useLocalStore, { StoreConfig } from "state-decorator";
 import { useTranslation } from "react-i18next";
 import Langue from "./Language";
+import AddIcon from "@mui/icons-material/Add";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -46,7 +45,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     width: "100%",
@@ -155,6 +153,8 @@ export default function HomePage() {
   const usersPerPage = 10;
   const { t } = useTranslation();
 
+  var refCreate = useRef(null);
+
   useEffect(() => {
     a.setUsers(users);
   }, [users]);
@@ -247,7 +247,7 @@ export default function HomePage() {
                 onChange={handleSearch}
               />
             </Search>
-            <Typography style={{ fontStyle: "bold" }}>
+            <Typography style={{ fontWeight: "bold" }}>
               {t("filters")}
             </Typography>
             <FormControlLabel
@@ -275,22 +275,6 @@ export default function HomePage() {
             )}
           />
         </Box>
-        <Container style={{ alignContent: "center" }}>
-          <Fab
-            color="secondary"
-            className="add"
-            aria-label="add"
-            style={{
-              color: "white",
-              position: "fixed",
-              bottom: 16,
-              right: 16,
-            }}
-            onClick={() => showCreateModal(true)}
-          >
-            <AddIcon />
-          </Fab>
-        </Container>
         <div
           style={{
             display: "flex",
@@ -318,8 +302,28 @@ export default function HomePage() {
           title={t("createTitle")}
           messageSuccess={t("createSuccess")}
           messageError={t("noCreate")}
+          object={refCreate.current}
         />
       )}
+      <Container style={{ alignContent: "center" }}>
+        <Fab
+          color="secondary"
+          className="add"
+          aria-label="add"
+          style={{
+            color: "white",
+            position: "fixed",
+            bottom: 16,
+            right: 16,
+          }}
+          onClick={() => {
+            showCreateModal(true);
+            refCreate.current = document.activeElement;
+          }}
+        >
+          <AddIcon />
+        </Fab>
+      </Container>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={openCreateSuccess}
