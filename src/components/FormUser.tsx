@@ -212,7 +212,6 @@ export default function FormUser(p: ModalUserProps) {
               defaultValue={p.user.lastName}
             />
             <DatePicker
-              size="small"
               label={t("birthdate")}
               onChange={handleBirthdateInputChange}
               defaultValue={

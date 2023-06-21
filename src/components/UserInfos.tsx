@@ -1,7 +1,7 @@
 import { useContext, useRef, useState } from "react";
 import UsersContext from "../contexts/UsersContext";
 import { Link, useParams } from "react-router-dom";
-import { AppBar, Box, Button, Fab, Snackbar, Toolbar } from "@material-ui/core";
+import { AppBar, Box, Fab, Snackbar, Toolbar } from "@material-ui/core";
 import DialogDelete from "./DialogDelete";
 import FormUser from "./FormUser";
 import EditIcon from "@mui/icons-material/Edit";

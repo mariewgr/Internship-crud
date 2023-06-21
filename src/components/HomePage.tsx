@@ -250,7 +250,7 @@ export default function HomePage() {
                 alignItems: "center",
               }}
             >
-              <SearchIcon style={{ color: "darkorange" }} />
+              <SearchIcon style={{ color: "grey" }} />
               <StyledInputBase
                 placeholder={t("search")}
                 inputProps={{ "aria-label": "search" }}
@@ -264,9 +264,7 @@ export default function HomePage() {
                 alignItems: "center",
               }}
             >
-              <FilterAltIcon
-                style={{ paddingRight: 10, color: "darkorange" }}
-              />
+              <FilterAltIcon style={{ paddingRight: 10 }} />
               <FormControlLabel
                 control={<Checkbox />}
                 label={t("birthdateKnown")}
