@@ -99,25 +99,21 @@ export default function UserInfo() {
       >
         <ImageIcon />
       </Fab>
-      <Button
+      <Fab
         onClick={() => {
           setOpenDeleteModal(true);
           refDelete.current = document.activeElement;
         }}
         style={{
-          borderRadius: 150,
-          width: 55,
-          height: 55,
           position: "fixed",
           top: 75,
           right: 15,
           color: "orange",
+          background: "lightgrey",
         }}
-        color="secondary"
-        variant="outlined"
       >
         <DeleteIcon />
-      </Button>
+      </Fab>
 
       {openUpdateModal && (
         <FormUser
