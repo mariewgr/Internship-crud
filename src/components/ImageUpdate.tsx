@@ -87,7 +87,10 @@ export default function ImageUpdate(p: ImageUpdateProps) {
       </Fab>
       <Dialog
         open={p.openImage}
-        onClose={() => p.setOpenImage(false)}
+        onClose={() => {
+          p.setOpenImage(false);
+          setTimeout(() => refImage.current?.focus(), 200);
+        }}
         aria-labelledby="responsive-dialog-title"
       >
         {errorMap.updateUser && (

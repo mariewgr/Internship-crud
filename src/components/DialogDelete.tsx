@@ -28,7 +28,10 @@ export default function DialogDelete(p: DialogDeleteProps) {
     <>
       <Dialog
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={() => {
+          setOpen(false);
+          setTimeout(() => p.object?.focus(), 100);
+        }}
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle
@@ -52,6 +55,7 @@ export default function DialogDelete(p: DialogDeleteProps) {
           <Button
             onClick={() => {
               setOpen(false);
+              setTimeout(() => p.object?.focus(), 100);
             }}
             style={{ color: "grey" }}
             variant="outlined"
@@ -69,9 +73,9 @@ export default function DialogDelete(p: DialogDeleteProps) {
             disabled={loadingMap.deleteUser}
             color="error"
             variant="contained"
+            style={{ color: "white" }}
           >
-            <Link to={"/"}></Link>
-            {t("delete")}
+            <Link to={"/"}>{t("delete")}</Link>
           </Button>
         </DialogActions>
       </Dialog>
