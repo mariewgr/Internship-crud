@@ -21,7 +21,6 @@
     "noDelete" :   "Could not delete the user" ,
     "search" :   "Search..." ,
     "birthdateKnown" :   "Birthdate registered" ,
-    "filters" :   "Filters:" ,
     "year" :   "Year of birth" ,
     "noNumber" :   "Must be a number" ,
     "noUpdateImage" :   "Could not update the image" ,
