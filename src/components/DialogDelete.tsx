@@ -73,9 +73,10 @@ export default function DialogDelete(p: DialogDeleteProps) {
             disabled={loadingMap.deleteUser}
             color="error"
             variant="contained"
-            style={{ color: "white" }}
           >
-            <Link to={"/"}>{t("delete")}</Link>
+            <Link to={"/"} style={{ color: "white" }}>
+              {t("delete")}
+            </Link>
           </Button>
         </DialogActions>
       </Dialog>
