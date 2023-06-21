@@ -24,6 +24,7 @@ import useLocalStore, { StoreConfig } from "state-decorator";
 import { useTranslation } from "react-i18next";
 import Langue from "./Language";
 import AddIcon from "@mui/icons-material/Add";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import { setArgIn } from "state-decorator/helpers";
 
 const Search = styled("div")(({ theme }) => ({
@@ -235,49 +236,56 @@ export default function HomePage() {
               margin: 0,
               marginBottom: 10,
               borderRadius: 5,
-              maxWidth: 6000,
               background: "white",
               display: "flex",
-              alignItems: "center",
-              alignContent: "space-around",
-              justifyContent: "space-evenly",
+              flexDirection: "column",
             }}
           >
             <Search
               style={{
                 padding: 7,
                 margin: 0,
-                maxWidth: 300,
                 flexGrow: 1,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              <SearchIcon />
+              <SearchIcon style={{ color: "darkorange" }} />
               <StyledInputBase
                 placeholder={t("search")}
                 inputProps={{ "aria-label": "search" }}
                 onChange={handleSearch}
               />
             </Search>
-            <Typography style={{ fontWeight: "bold" }}>
-              {t("filters")}
-            </Typography>
-            <FormControlLabel
-              control={<Checkbox />}
-              label={t("birthdateKnown")}
-              color="secondary"
-              onClick={handleCheckBox}
-            />
-            <TextField
-              error={!s.isANumber}
-              value={s.inputYear}
-              label={t("year")}
-              placeholder="ex: 1990"
-              inputProps={ariaLabel}
-              onChange={handleYearChoice}
-              variant="outlined"
-              helperText={!s.isANumber && t("noNumber")}
-              size="small"
-            />
+            <Container
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <FilterAltIcon
+                style={{ paddingRight: 10, color: "darkorange" }}
+              />
+              <FormControlLabel
+                control={<Checkbox />}
+                label={t("birthdateKnown")}
+                color="secondary"
+                onClick={handleCheckBox}
+              />
+              <TextField
+                error={!s.isANumber}
+                value={s.inputYear}
+                label={t("year")}
+                placeholder="ex: 1990"
+                inputProps={ariaLabel}
+                onChange={handleYearChoice}
+                variant="outlined"
+                helperText={!s.isANumber && t("noNumber")}
+                size="small"
+              />
+            </Container>
           </Container>
           <BasicTable
             users={s.filteredUsers.slice(
