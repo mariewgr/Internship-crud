@@ -80,7 +80,7 @@ export const config: StoreConfig<State, Actions> = {
     openUpdateSuccess: false,
     openUpdateImageSuccess: false,
     page: 1,
-    language: Language.FR,
+    language: Language.EN,
   }),
 
   actions: {
@@ -159,7 +159,7 @@ export const config: StoreConfig<State, Actions> = {
       },
     },
   },
-  onMount: () => dayjs.locale("fr"),
+  onMount: () => dayjs.locale("en"),
   logEnabled: true,
 };
 

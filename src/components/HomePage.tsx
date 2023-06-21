@@ -12,7 +12,6 @@ import {
   Snackbar,
   TextField,
   Toolbar,
-  Typography,
   alpha,
   styled,
 } from "@material-ui/core";

@@ -14,16 +14,16 @@ const Langue = () => {
     let language = event.target.value;
 
     switch (language) {
-      case Language.EN:
-        setLanguage(Language.EN);
-        i18n.changeLanguage(Language.EN);
-        dayjs.locale("en");
-        break;
       case Language.FR:
-      default:
         setLanguage(Language.FR);
         i18n.changeLanguage(Language.FR);
         dayjs.locale("fr");
+        break;
+      case Language.EN:
+      default:
+        setLanguage(Language.EN);
+        i18n.changeLanguage(Language.EN);
+        dayjs.locale("en");
         break;
     }
   };
@@ -36,8 +36,8 @@ const Langue = () => {
         style={{ color: "white" }}
         value={language as undefined}
       >
-        <MenuItem value={Language.FR}>FR</MenuItem>
         <MenuItem value={Language.EN}>EN</MenuItem>
+        <MenuItem value={Language.FR}>FR</MenuItem>
       </Select>
     </div>
   );
