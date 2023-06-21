@@ -36,10 +36,10 @@ export default function UserRow(p: UserRowProps) {
     openDeleteSuccess,
     setOpenUpdateSuccess,
     openUpdateSuccess,
-    showUpdateModal,
   } = useContext(UsersContext);
-  const [openDelete, setDeleteOpen] = useState(false);
-  const [openUpdateLocal, setUpdateOpen] = useState(false);
+
+  const [openDelete, setOpenDelete] = useState(false);
+  const [openUpdateLocal, setOpenUpdateLocal] = useState(false);
 
   const { t } = useTranslation();
 
@@ -69,7 +69,7 @@ export default function UserRow(p: UserRowProps) {
             <IconButton
               aria-label="delete"
               onClick={() => {
-                setDeleteOpen(true);
+                setOpenDelete(true);
                 refDelete.current = document.activeElement;
               }}
               size="small"
@@ -77,39 +77,43 @@ export default function UserRow(p: UserRowProps) {
             >
               <DeleteIcon />
             </IconButton>
-            <DialogDelete
-              open={openDelete}
-              setOpen={setDeleteOpen}
-              id={user.id}
-              object={refDelete.current}
-            />
             <IconButton
               aria-label="edit"
               onClick={() => {
-                setUpdateOpen(true);
+                setOpenUpdateLocal(true);
                 refUpdate.current = document.activeElement;
               }}
               size="small"
             >
               <EditIcon />
             </IconButton>
+
             {openUpdateLocal && (
               <FormUser
-                action={updateUser}
-                showModal={setUpdateOpen}
-                open={openUpdateLocal}
+                submitAction={updateUser}
+                setOpenModal={setOpenUpdateLocal}
+                openModal={openUpdateLocal}
                 isLoading={loadingMap.updateUser}
                 isError={!!errorMap.updateUser}
                 user={user}
                 title={t("edit")}
                 messageSuccess={t("updateSuccess")}
                 messageError={t("noUpdate")}
-                object={refUpdate.current}
+                activeObject={refUpdate.current}
+              />
+            )}
+            {openDelete && (
+              <DialogDelete
+                openModal={openDelete}
+                setOpenModal={setOpenDelete}
+                id={user.id}
+                activeObject={refDelete.current}
               />
             )}
           </>
         </TableCell>
       </TableRow>
+
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={openDeleteSuccess}

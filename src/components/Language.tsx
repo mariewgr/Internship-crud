@@ -8,20 +8,20 @@ import UsersContext from "../contexts/UsersContext";
 
 const Langue = () => {
   const { i18n } = useTranslation();
-  const { lang, setLang } = useContext(UsersContext);
+  const { language, setLanguage } = useContext(UsersContext);
 
   let changeLanguage = (event: SelectChangeEvent<HTMLSelectElement>) => {
     let language = event.target.value;
 
     switch (language) {
       case Language.EN:
-        setLang(Language.EN);
+        setLanguage(Language.EN);
         i18n.changeLanguage(Language.EN);
         dayjs.locale("en");
         break;
       case Language.FR:
       default:
-        setLang(Language.FR);
+        setLanguage(Language.FR);
         i18n.changeLanguage(Language.FR);
         dayjs.locale("fr");
         break;
@@ -34,7 +34,7 @@ const Langue = () => {
         name="language"
         onChange={changeLanguage}
         style={{ color: "white" }}
-        value={lang as undefined}
+        value={language as undefined}
       >
         <MenuItem value={Language.FR}>FR</MenuItem>
         <MenuItem value={Language.EN}>EN</MenuItem>

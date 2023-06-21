@@ -24,6 +24,7 @@ import useLocalStore, { StoreConfig } from "state-decorator";
 import { useTranslation } from "react-i18next";
 import Langue from "./Language";
 import AddIcon from "@mui/icons-material/Add";
+import { setArgIn } from "state-decorator/helpers";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -57,7 +58,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export const filteredUsers = (
   users: User[],
   checked: boolean,
-  year: number,
+  searchYear: number,
   searchTerm: string
 ) => {
   var searchedUsers = users.filter(
@@ -76,9 +77,10 @@ export const filteredUsers = (
   if (checked) {
     searchedUsers = searchedUsers.filter((user) => user.birthdate !== null);
   }
-  if (year > 1800) {
+  if (searchYear > 1000) {
     searchedUsers = searchedUsers.filter(
-      (user) => user.birthdate !== null && dayjs(user.birthdate).year() === year
+      (user) =>
+        user.birthdate !== null && dayjs(user.birthdate).year() === searchYear
     );
   }
 
@@ -87,7 +89,7 @@ export const filteredUsers = (
 
 type Actions = {
   setSearchTerm: (searchTerm: string) => void;
-  setYear: (year: number) => void;
+  setSearchYear: (year: number) => void;
   setInputYear: (inputYear: string) => void;
   setChecked: (checked: boolean) => void;
   setIsANumber: (IsANumber: boolean) => void;
@@ -96,7 +98,7 @@ type Actions = {
 
 export type State = {
   searchTerm: string;
-  year: number;
+  searchYear: number;
   inputYear: string;
   checked: boolean;
   isANumber: boolean;
@@ -110,7 +112,7 @@ type DerivedState = {
 export const configHomePage: StoreConfig<State, Actions, any, DerivedState> = {
   getInitialState: () => ({
     searchTerm: "",
-    year: 0,
+    searchYear: 0,
     inputYear: "",
     checked: false,
     isANumber: true,
@@ -119,17 +121,18 @@ export const configHomePage: StoreConfig<State, Actions, any, DerivedState> = {
   }),
 
   actions: {
-    setSearchTerm: ({ args: [searchTerm] }) => ({ searchTerm }),
-    setYear: ({ args: [year] }) => ({ year }),
-    setInputYear: ({ args: [inputYear] }) => ({ inputYear }),
-    setChecked: ({ args: [checked] }) => ({ checked }),
-    setIsANumber: ({ args: [isANumber] }) => ({ isANumber }),
-    setUsers: ({ args: [users] }) => ({ users }),
+    setSearchTerm: setArgIn("searchTerm"),
+    setSearchYear: setArgIn("searchYear"),
+    setInputYear: setArgIn("inputYear"),
+    setChecked: setArgIn("checked"),
+    setIsANumber: setArgIn("isANumber"),
+    setUsers: setArgIn("users"),
   },
   derivedState: {
     filteredUsers: {
-      getDeps: ({ s }) => [s.searchTerm, s.checked, s.year, s.users],
-      get: ({ s }) => filteredUsers(s.users, s.checked, s.year, s.searchTerm),
+      getDeps: ({ s }) => [s.searchTerm, s.checked, s.searchYear, s.users],
+      get: ({ s }) =>
+        filteredUsers(s.users, s.checked, s.searchYear, s.searchTerm),
     },
   },
   logEnabled: true,
@@ -139,8 +142,8 @@ export default function HomePage() {
   const {
     users,
     createUser,
-    showCreateModal,
-    openCreate,
+    setOpenCreateModal,
+    openCreateModal,
     loadingMap,
     errorMap,
     setPage,
@@ -148,9 +151,13 @@ export default function HomePage() {
     openCreateSuccess,
     setOpenCreateSuccess,
   } = useContext(UsersContext);
+
   const { state: s, actions: a } = useLocalStore(configHomePage);
+
   const ariaLabel = { "aria-label": "description" };
+
   const usersPerPage = 10;
+
   const { t } = useTranslation();
 
   var refCreate = useRef(null);
@@ -160,16 +167,21 @@ export default function HomePage() {
   }, [users]);
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
-    a.setSearchTerm(event.target.value.toLowerCase());
+    a.setSearchTerm(
+      event.target.value
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+    );
     setPage(1);
   };
   const handleYearChoice = (event: ChangeEvent<HTMLInputElement>) => {
     a.setInputYear(event.target.value);
     if (parseInt(event.target.value)) {
-      a.setYear(parseInt(event.target.value));
+      a.setSearchYear(parseInt(event.target.value));
       a.setIsANumber(true);
     } else if (event.target.value === "") {
-      a.setYear(0);
+      a.setSearchYear(0);
       a.setIsANumber(true);
     } else {
       a.setIsANumber(false);
@@ -210,7 +222,6 @@ export default function HomePage() {
             </Box>
           </Toolbar>
         </AppBar>
-        {errorMap.deleteUser && <Alert severity="error">{t("noDelete")}</Alert>}
         <Box
           style={{
             display: "flex",
@@ -224,8 +235,8 @@ export default function HomePage() {
               margin: 0,
               marginBottom: 10,
               borderRadius: 5,
+              maxWidth: 6000,
               background: "white",
-              maxWidth: 5000,
               display: "flex",
               alignItems: "center",
               alignContent: "space-around",
@@ -285,13 +296,13 @@ export default function HomePage() {
           <Pagination count={6} page={page} onChange={handlePage} />
         </div>
       </Box>
-      {openCreate && (
+      {openCreateModal && (
         <FormUser
-          action={createUser}
+          submitAction={createUser}
           isError={!!errorMap.createUser}
           isLoading={loadingMap.createUser}
-          showModal={showCreateModal}
-          open={openCreate}
+          setOpenModal={setOpenCreateModal}
+          openModal={openCreateModal}
           user={{
             id: "",
             firstName: "",
@@ -302,13 +313,12 @@ export default function HomePage() {
           title={t("createTitle")}
           messageSuccess={t("createSuccess")}
           messageError={t("noCreate")}
-          object={refCreate.current}
+          activeObject={refCreate.current}
         />
       )}
       <Container style={{ alignContent: "center" }}>
         <Fab
           color="secondary"
-          className="add"
           aria-label="add"
           style={{
             color: "white",
@@ -317,7 +327,7 @@ export default function HomePage() {
             right: 16,
           }}
           onClick={() => {
-            showCreateModal(true);
+            setOpenCreateModal(true);
             refCreate.current = document.activeElement;
           }}
         >

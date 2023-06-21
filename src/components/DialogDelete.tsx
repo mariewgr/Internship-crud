@@ -8,17 +8,17 @@ import Button from "@mui/material/Button";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import UsersContext from "../contexts/UsersContext";
-import { Typography } from "@mui/material";
+import { Alert, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 type DialogDeleteProps = {
-  open: boolean;
-  setOpen: (bool: boolean) => void;
+  openModal: boolean;
+  setOpenModal: (bool: boolean) => void;
   id: string;
-  object: any;
+  activeObject: any;
 };
 export default function DialogDelete(p: DialogDeleteProps) {
-  const { open, setOpen } = p;
+  const { openModal, setOpenModal, activeObject } = p;
   const { loadingMap, errorMap, deleteUser, setOpenDeleteSuccess } =
     useContext(UsersContext);
 
@@ -27,13 +27,14 @@ export default function DialogDelete(p: DialogDeleteProps) {
   return (
     <>
       <Dialog
-        open={open}
+        open={openModal}
         onClose={() => {
-          setOpen(false);
-          setTimeout(() => p.object?.focus(), 100);
+          setOpenModal(false);
+          setTimeout(() => activeObject?.focus(), 100);
         }}
         aria-labelledby="responsive-dialog-title"
       >
+        {errorMap.deleteUser && <Alert severity="error">{t("noDelete")}</Alert>}
         <DialogTitle
           id="responsive-dialog-title"
           style={{
@@ -54,8 +55,8 @@ export default function DialogDelete(p: DialogDeleteProps) {
         <DialogActions style={{ justifyContent: "space-between" }}>
           <Button
             onClick={() => {
-              setOpen(false);
-              setTimeout(() => p.object?.focus(), 100);
+              setOpenModal(false);
+              setTimeout(() => activeObject?.focus(), 100);
             }}
             style={{ color: "grey" }}
             variant="outlined"
@@ -66,7 +67,7 @@ export default function DialogDelete(p: DialogDeleteProps) {
             onClick={() => {
               deleteUser(p.id);
               if (!errorMap.deleteUser) {
-                setOpen(false);
+                setOpenModal(false);
                 setOpenDeleteSuccess(true);
               }
             }}

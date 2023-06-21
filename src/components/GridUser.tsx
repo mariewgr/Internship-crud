@@ -4,7 +4,6 @@ import { UserInfosActions, UserInfosState } from "./UserInfos";
 import { useTranslation } from "react-i18next";
 import "./GridUser.css";
 import { Container } from "@material-ui/core";
-import { toHaveDisplayValue } from "@testing-library/jest-dom/matchers";
 
 type GrideUserProps = { user: User } & Pick<UserInfosActions, "setNewImage"> &
   Pick<UserInfosState, "newImage">;

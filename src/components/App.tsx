@@ -12,14 +12,13 @@ function App() {
   return (
     <>
       {loadingMap.loadUsers && (
-        <div style={{ justifyContent: "center", justifyItems: "center" }}>
+        <div>
           {" "}
           <LinearProgress />
         </div>
       )}
       {errorMap.loadUsers && (
         <div style={{ justifyContent: "center", justifyItems: "center" }}>
-          {" "}
           <Alert severity="error">{t("errorLoading")}</Alert>
         </div>
       )}

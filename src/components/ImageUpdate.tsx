@@ -1,6 +1,5 @@
 import {
   Button,
-  Fab,
   Dialog,
   Box,
   DialogActions,
@@ -10,15 +9,13 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Alert, Stack } from "@mui/material";
-import { ChangeEvent, useContext, useRef, useState } from "react";
+import { ChangeEvent, useContext, useState } from "react";
 import UsersContext, { User } from "../contexts/UsersContext";
-import ImageIcon from "@mui/icons-material/Image";
 import { useTranslation } from "react-i18next";
 
 type ImageUpdateProps = {
-  openImage: boolean;
-  setOpenImage: (openImage: boolean) => void;
   user: User;
+  activeObject: any;
 };
 
 export default function ImageUpdate(p: ImageUpdateProps) {
@@ -26,16 +23,18 @@ export default function ImageUpdate(p: ImageUpdateProps) {
     errorMap,
     updateUser,
     loadingMap,
-    openUpdateSuccess,
-    setOpenUpdateSuccess,
+    openUpdateImageSuccess,
+    setOpenUpdateImageSuccess,
+    setOpenUpdateImageModal,
+    openUpdateImageModal,
   } = useContext(UsersContext);
 
+  const { user, activeObject } = p;
+
   const [imageInput, setImageInput] = useState(p.user.imageUrl);
-  const [wrongInput, setWrongInput] = useState(false);
+  const [isVerifiedImage, setIsVerifiedImage] = useState(false);
 
   const { t } = useTranslation();
-
-  const refImage = useRef(null);
 
   const handleImageChange = () => {
     if (
@@ -44,22 +43,22 @@ export default function ImageUpdate(p: ImageUpdateProps) {
       ) !== null
     ) {
       updateUser(
-        p.user.id,
-        p.user.firstName,
-        p.user.lastName,
-        p.user.birthdate,
+        user.id,
+        user.firstName,
+        user.lastName,
+        user.birthdate,
         imageInput
       );
-      setWrongInput(false);
+      setIsVerifiedImage(true);
 
       if (!errorMap.updateUser) {
-        setOpenUpdateSuccess(true);
-        p.setOpenImage(false);
+        setOpenUpdateImageSuccess(true);
+        setOpenUpdateImageModal(false);
+        setTimeout(() => activeObject?.focus(), 100);
       }
     } else {
-      setWrongInput(true);
+      setIsVerifiedImage(false);
     }
-    setTimeout(() => refImage.current?.focus(), 100);
   };
 
   const handleImageInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -68,28 +67,11 @@ export default function ImageUpdate(p: ImageUpdateProps) {
 
   return (
     <>
-      <Fab
-        onClick={() => {
-          p.setOpenImage(true);
-          refImage.current = document.activeElement;
-        }}
-        color="secondary"
-        className="edit"
-        aria-label="image"
-        style={{
-          color: "white",
-          position: "fixed",
-          top: 75,
-          right: 85,
-        }}
-      >
-        <ImageIcon />
-      </Fab>
       <Dialog
-        open={p.openImage}
+        open={openUpdateImageModal}
         onClose={() => {
-          p.setOpenImage(false);
-          setTimeout(() => refImage.current?.focus(), 200);
+          setOpenUpdateImageModal(false);
+          setTimeout(() => activeObject?.focus(), 200);
         }}
         aria-labelledby="responsive-dialog-title"
       >
@@ -114,13 +96,13 @@ export default function ImageUpdate(p: ImageUpdateProps) {
           <Stack spacing={3}>
             <TextField
               size="small"
-              error={wrongInput}
+              error={isVerifiedImage}
               label={t("imageUrl")}
               placeholder={t("imageUrl")}
               onChange={handleImageInputChange}
               variant="outlined"
-              defaultValue={p.user.imageUrl}
-              helperText={wrongInput && t("notALink")}
+              defaultValue={user.imageUrl}
+              helperText={isVerifiedImage && t("notALink")}
               style={{ paddingBottom: 5 }}
             />
           </Stack>
@@ -144,8 +126,8 @@ export default function ImageUpdate(p: ImageUpdateProps) {
           </Button>
           <Button
             onClick={() => {
-              p.setOpenImage(false);
-              setTimeout(() => refImage.current?.focus(), 100);
+              setOpenUpdateImageModal(false);
+              setTimeout(() => activeObject?.focus(), 100);
             }}
             disabled={loadingMap.updateUser}
             variant="contained"
@@ -157,12 +139,12 @@ export default function ImageUpdate(p: ImageUpdateProps) {
       </Dialog>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={openUpdateSuccess}
+        open={openUpdateImageSuccess}
         autoHideDuration={3000}
-        onClose={() => setOpenUpdateSuccess(false)}
+        onClose={() => setOpenUpdateImageSuccess(false)}
       >
         <Alert
-          onClose={() => setOpenUpdateSuccess(false)}
+          onClose={() => setOpenUpdateImageSuccess(false)}
           severity="success"
           sx={{ width: "100%" }}
         >

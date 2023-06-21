@@ -1,47 +1,19 @@
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import UsersContext from "../contexts/UsersContext";
 import { Link, useParams } from "react-router-dom";
-import "./UserInfo.css";
 import { AppBar, Box, Button, Fab, Snackbar, Toolbar } from "@material-ui/core";
 import DialogDelete from "./DialogDelete";
 import FormUser from "./FormUser";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ImageIcon from "@mui/icons-material/Image";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Alert } from "@mui/material";
-import useLocalStore, { StoreConfig } from "state-decorator";
-import { setArgIn } from "state-decorator/helpers";
 import GrideUser from "./GridUser";
 import ImageUpdate from "./ImageUpdate";
 import { useTranslation } from "react-i18next";
 import Langue from "./Language";
 
-type Actions = {
-  setNewImage: (newImage: string) => void;
-  setOpenImage: (openImage: boolean) => void;
-};
-
-export type UserInfosActions = Actions;
-
-type State = {
-  newImage: string;
-  openImage: boolean;
-};
-
-export type UserInfosState = State;
-// Initial state & actions
-export const configUserInfo: StoreConfig<State, Actions> = {
-  getInitialState: () => ({
-    openImage: false,
-    newImage: "",
-  }),
-
-  actions: {
-    setNewImage: setArgIn("newImage"),
-    setOpenImage: setArgIn("openImage"),
-  },
-  logEnabled: true,
-};
 export default function UserInfo() {
   const { userId } = useParams();
   const {
@@ -52,14 +24,16 @@ export default function UserInfo() {
     setOpenUpdateSuccess,
     openUpdateSuccess,
     openUpdateImageSuccess,
-    openUpdate,
-    showUpdateModal,
-    showDeleteModal,
-    openDelete,
+    openUpdateModal,
+    openUpdateImageModal,
+    setOpenUpdateModal,
+    setOpenDeleteModal,
+    openDeleteModal,
     setOpenUpdateImageSuccess,
+    setOpenUpdateImageModal,
   } = useContext(UsersContext);
 
-  const { state: s, actions: a } = useLocalStore(configUserInfo);
+  const [newImage, setNewImage] = useState("");
 
   const user = users.find((user) => user.id === userId);
 
@@ -67,6 +41,7 @@ export default function UserInfo() {
 
   const refUpdate = useRef(null);
   const refDelete = useRef(null);
+  const refUpdateImage = useRef(null);
 
   return (
     <>
@@ -79,7 +54,7 @@ export default function UserInfo() {
               justifyItems: "center",
             }}
           >
-            <Link to={"/"} style={{ color: "#fff" }}>
+            <Link to={"/"} style={{ color: "white" }}>
               <ArrowBackIcon />
             </Link>
           </Box>
@@ -88,20 +63,7 @@ export default function UserInfo() {
           </Box>
         </Toolbar>
       </AppBar>
-      {errorMap.deleteUser && <Alert severity="error">{t("noDelete")}</Alert>}
-      <GrideUser
-        user={user}
-        setNewImage={a.setNewImage}
-        newImage={s.newImage}
-      />
-      {openDelete && (
-        <DialogDelete
-          open={openDelete}
-          setOpen={showDeleteModal}
-          id={userId}
-          object={refDelete.current}
-        />
-      )}
+      <GrideUser user={user} setNewImage={setNewImage} newImage={newImage} />
 
       <Fab
         color="secondary"
@@ -114,20 +76,32 @@ export default function UserInfo() {
           color: "white",
         }}
         onClick={() => {
-          showUpdateModal(true);
+          setOpenUpdateModal(true);
           refUpdate.current = document.activeElement;
         }}
       >
         <EditIcon />
       </Fab>
-      <ImageUpdate
-        openImage={s.openImage}
-        setOpenImage={a.setOpenImage}
-        user={user}
-      />
+      <Fab
+        onClick={() => {
+          setOpenUpdateImageModal(true);
+          refUpdateImage.current = document.activeElement;
+        }}
+        color="secondary"
+        className="edit"
+        aria-label="image"
+        style={{
+          color: "white",
+          position: "fixed",
+          top: 75,
+          right: 85,
+        }}
+      >
+        <ImageIcon />
+      </Fab>
       <Button
         onClick={() => {
-          showDeleteModal(true);
+          setOpenDeleteModal(true);
           refDelete.current = document.activeElement;
         }}
         style={{
@@ -144,20 +118,33 @@ export default function UserInfo() {
       >
         <DeleteIcon />
       </Button>
-      {openUpdate && (
+
+      {openUpdateModal && (
         <FormUser
-          action={updateUser}
-          showModal={showUpdateModal}
-          open={openUpdate}
+          submitAction={updateUser}
+          setOpenModal={setOpenUpdateModal}
+          openModal={openUpdateModal}
           isLoading={loadingMap.updateUser}
           isError={!!errorMap.updateUser}
           user={user}
           title={t("edit")}
           messageSuccess={t("updateSuccess")}
           messageError={t("noUpdate")}
-          object={refUpdate.current}
+          activeObject={refUpdate.current}
         />
       )}
+      {openUpdateImageModal && (
+        <ImageUpdate user={user} activeObject={refUpdateImage.current} />
+      )}
+      {openDeleteModal && (
+        <DialogDelete
+          openModal={openDeleteModal}
+          setOpenModal={setOpenDeleteModal}
+          id={userId}
+          activeObject={refDelete.current}
+        />
+      )}
+
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={openUpdateSuccess}
